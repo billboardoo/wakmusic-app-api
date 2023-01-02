@@ -1,0 +1,16 @@
+{
+  "main": {
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "sin532100!!",
+    "database": "wakmusic"
+  },
+  "chart": {
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "sin532100!!",
+    "database": "chart"
+  }
+}
