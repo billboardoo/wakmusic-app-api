@@ -36,7 +36,10 @@ lerna-debug.log*
 /tsconfig.json
 
 # Database config
-typeorm.config.json
+/typeorm.config.json
 
 # Dummy files
 dummy/
+
+# env
+.env

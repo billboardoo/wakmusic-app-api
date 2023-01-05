@@ -8,12 +8,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService, ChartsType } from './app.service';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
-import { NewsEntity } from './entity/main/news.entity';
-import { TeamsEntity } from './entity/main/teams.entity';
-import { ArtistsEntity } from './entity/chart/artists.entity';
-import { TotalEntity } from './entity/chart/total.entity';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { NewsEntity } from './entitys/main/news.entity';
+import { TeamsEntity } from './entitys/main/teams.entity';
+import { ArtistsEntity } from './entitys/chart/artists.entity';
+import { TotalEntity } from './entitys/chart/total.entity';
+import { UpdatedEntity } from './entitys/chart/updated.entity';
 
+@ApiTags('main')
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -46,16 +48,4 @@ export class AppController {
   async findAllTeams(): Promise<Array<TeamsEntity>> {
     return await this.appService.findAllTeams();
   }
-
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Get('/charts/:type')
-  async findCharts(
-    @Param('type') type: ChartsType,
-    @Query('limit') limit?: number,
-  ): Promise<Array<TotalEntity>> {
-    return await this.appService.findCharts(type, limit);
-  }
-
-  @Post('/charts')
-  async createCharts() {}
 }

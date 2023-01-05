@@ -1,35 +1,30 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { main, chart } from '../../typeorm.config.json';
-import { ArtistsEntity } from '../entity/chart/artists.entity';
-import { UpdatedEntity } from '../entity/chart/updated.entity';
-import { TotalEntity } from '../entity/chart/total.entity';
-import { MonthlyEntity } from '../entity/chart/monthly.entity';
-import { WeeklyEntity } from '../entity/chart/weekly.entity';
-import { DailyEntity } from '../entity/chart/daily.entity';
-import { HourlyEntity } from '../entity/chart/hourly.entity';
-import { NewsEntity } from '../entity/main/news.entity';
-import { TeamsEntity } from '../entity/main/teams.entity';
+import { ArtistsEntity } from '../entitys/chart/artists.entity';
+import { MainArtistsEntity } from '../entitys/main/artists.entity';
+import { UpdatedEntity } from '../entitys/chart/updated.entity';
+import { TotalEntity } from '../entitys/chart/total.entity';
+import { MonthlyEntity } from '../entitys/chart/monthly.entity';
+import { WeeklyEntity } from '../entitys/chart/weekly.entity';
+import { DailyEntity } from '../entitys/chart/daily.entity';
+import { HourlyEntity } from '../entitys/chart/hourly.entity';
+import { NewsEntity } from '../entitys/main/news.entity';
+import { TeamsEntity } from '../entitys/main/teams.entity';
+import { root } from '../utils/path.utils';
+import { PlaylistEntity } from '../entitys/user/playlist.entity';
+import { UserEntity } from '../entitys/user/user.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
-  type: 'mysql',
-  host: main.host,
-  port: main.port,
-  username: main.username,
-  password: main.password,
-  database: main.database,
-  entities: [NewsEntity, TeamsEntity],
-  synchronize: true,
-  timezone: '+09:00',
+  type: 'sqlite',
+  database: `${root}/db/static.db`,
+  entities: [NewsEntity, TeamsEntity, MainArtistsEntity],
+  // synchronize: true,
 };
 
 export const chartDataSource: TypeOrmModuleOptions = {
   name: 'chart',
-  type: 'mysql',
-  host: chart.host,
-  port: chart.port,
-  username: chart.username,
-  password: chart.password,
-  database: chart.database,
+  type: 'sqlite',
+  database: `${root}/db/charts.db`,
   entities: [
     ArtistsEntity,
     UpdatedEntity,
@@ -39,6 +34,12 @@ export const chartDataSource: TypeOrmModuleOptions = {
     DailyEntity,
     HourlyEntity,
   ],
-  synchronize: true,
-  timezone: '+09:00',
+  // synchronize: true,
+};
+
+export const userDataSource: TypeOrmModuleOptions = {
+  name: 'user',
+  type: 'sqlite',
+  database: `${root}/db/user.db`,
+  entities: [PlaylistEntity, UserEntity],
 };

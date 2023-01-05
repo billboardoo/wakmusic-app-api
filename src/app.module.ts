@@ -2,37 +2,37 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { chartDataSource, mainDataSource } from './configs/typeorm.config';
+import {
+  chartDataSource,
+  mainDataSource,
+  userDataSource,
+} from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
-import { NewsEntity } from './entity/main/news.entity';
-import { TeamsEntity } from './entity/main/teams.entity';
-import { ArtistsEntity } from './entity/chart/artists.entity';
-import { DailyEntity } from './entity/chart/daily.entity';
-import { HourlyEntity } from './entity/chart/hourly.entity';
-import { MonthlyEntity } from './entity/chart/monthly.entity';
-import { WeeklyEntity } from './entity/chart/weekly.entity';
-import { TotalEntity } from './entity/chart/total.entity';
-import { UpdatedEntity } from './entity/chart/updated.entity';
+import { NewsEntity } from './entitys/main/news.entity';
+import { TeamsEntity } from './entitys/main/teams.entity';
 import { DataSource } from 'typeorm';
+import { ChartsModule } from './charts/charts.module';
+import { SongsModule } from './songs/songs.module';
+import { ArtistModule } from './artist/artist.module';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { RedirectModule } from './redirect/redirect.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
+    TypeOrmModule.forRoot(userDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
-    TypeOrmModule.forFeature(
-      [
-        MonthlyEntity,
-        WeeklyEntity,
-        DailyEntity,
-        HourlyEntity,
-        TotalEntity,
-        UpdatedEntity,
-        ArtistsEntity,
-      ],
-      'chart',
-    ),
+    ChartsModule,
+    SongsModule,
+    ArtistModule,
     AuthModule,
+    UserModule,
+    RedirectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
