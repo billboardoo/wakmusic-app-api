@@ -4,13 +4,6 @@ import { UserEntity } from '../entitys/user/user.entity';
 import { Repository } from 'typeorm';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
 
-export interface OAuthUser {
-  provider: string;
-  providerId: string;
-  email: string;
-  name: string;
-}
-
 @Injectable()
 export class UserService {
   constructor(
@@ -25,13 +18,16 @@ export class UserService {
       },
     });
   }
-  async findByProviderIdOrSave(googleUser: OAuthUser): Promise<UserEntity> {
-    const { providerId, provider } = googleUser;
+  async findByProviderIdOrSave(OAuthUser: any): Promise<UserEntity> {
+    let userId: string;
+    if (OAuthUser.provider == 'google') userId = OAuthUser.id;
+    else if (OAuthUser.provider == 'naver') userId = OAuthUser._json.id;
+    else if (OAuthUser.provider == 'apple') userId = OAuthUser.sub;
 
     const user = await this.userRepository.findOne({
       where: {
-        id: providerId,
-        platform: provider,
+        id: userId,
+        platform: OAuthUser.provider,
       },
     });
 
@@ -40,8 +36,8 @@ export class UserService {
     }
 
     const newUser = this.userRepository.create();
-    newUser.id = providerId;
-    newUser.platform = provider;
+    newUser.id = userId;
+    newUser.platform = OAuthUser.provider;
 
     return await this.userRepository.save(newUser);
   }

@@ -11,7 +11,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService, JwtPayload } from './auth.service';
 import { NextFunction, Request, Response } from 'express';
-import { OAuthUser, UserService } from '../user/user.service';
+import { UserService } from '../user/user.service';
 import { NaverAuthGuard } from './guard/naver-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { AppleAuthGuard } from './guard/apple-auth.guard';
@@ -38,7 +38,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const { accessToken } = await this.authService.login(req.user as OAuthUser);
+    const { accessToken } = await this.authService.login(req.user);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -54,7 +54,7 @@ export class AuthController {
   @Post('/callback/apple')
   @UseGuards(AppleAuthGuard)
   async appleAuthCallback(@Req() req: Request, @Res() res: Response) {
-    const { accessToken } = await this.authService.login(req.user as OAuthUser);
+    const { accessToken } = await this.authService.login(req.user);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -70,7 +70,7 @@ export class AuthController {
   @Get('/callback/naver')
   @UseGuards(NaverAuthGuard)
   async naverAuthCallback(@Req() req: Request, @Res() res: Response) {
-    const { accessToken } = await this.authService.login(req.user as OAuthUser);
+    const { accessToken } = await this.authService.login(req.user);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 

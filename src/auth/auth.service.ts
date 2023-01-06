@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as process from 'process';
-import { OAuthUser, UserService } from '../user/user.service';
+import { UserService } from '../user/user.service';
 
 export interface JwtPayload {
   id: string;
@@ -14,7 +14,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async login(reqUser: OAuthUser) {
+  async login(reqUser: any) {
     const user = await this.userService.findByProviderIdOrSave(reqUser);
 
     const payload: JwtPayload = { id: user.id };
