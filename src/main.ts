@@ -34,13 +34,17 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
-    .addBearerAuth()
+    .addCookieAuth()
     .setTitle('wakmusic app backend')
     .setDescription('왁타버스 뮤직 api 설명서')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      supportedSubmitMethods: [],
+    },
+  });
 
   await app.listen(3000);
 }

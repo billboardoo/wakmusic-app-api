@@ -21,11 +21,27 @@ import { PlaylistDetailResponseDto } from './dto/response/playlist-detail.respon
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 
 @Controller('playlist')
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 
+  @ApiOperation({
+    summary: '모든 플레이리스트 목록',
+    description: '모든 플레이리스트 목록을 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '플레이리스트 목록',
+    type: () => PlaylistEntity,
+    isArray: true,
+  })
+  @ApiBearerAuth()
   @Get('/')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -33,6 +49,15 @@ export class PlaylistController {
     return await this.playlistService.findAll();
   }
 
+  @ApiOperation({
+    summary: 'key를 통해 플레이리스트 조회',
+    description: 'key를 통해 플레이리스트를 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '플레이리스트',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Get('/:id')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -43,6 +68,15 @@ export class PlaylistController {
     return playlist;
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 생성.',
+    description: '플레이리스트를 생성합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '플레이리스트',
+    type: () => PlaylistCreateResponseDto,
+  })
+  @ApiBearerAuth()
   @Post('/create')
   @UseGuards(JwtAuthGuard)
   async create(
@@ -56,6 +90,15 @@ export class PlaylistController {
     };
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 세부정보',
+    description: 'key에 맞는 플레이리스트의 세부정보를 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '플레이리스트 세부정보',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Get('/:key/detail')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -66,6 +109,15 @@ export class PlaylistController {
     return playlist;
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 수정',
+    description: '플레이리스트를 수정합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '수정된 플레이리스트',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Post('/:key/edit')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -80,13 +132,22 @@ export class PlaylistController {
     return playlist;
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 삭제',
+    description: '플레이리스트를 삭제합니다',
+  })
+  @ApiCreatedResponse({
+    description: '삭제된 플레이리스트',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Post('/:key/delete')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async deletePlaylist(
     @Req() req: Request,
     @Param('key') key: string,
-  ): Promise<PlaylistCreateResponseDto> {
+  ): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.delete(
       key,
       (req.user as JwtPayload).id,
@@ -96,6 +157,15 @@ export class PlaylistController {
     return playlist;
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 구독자 추가',
+    description: '플레이리스트에 구독자를 추가합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '플레이리스트',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Post('/:key/addSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -117,6 +187,15 @@ export class PlaylistController {
     return playlist;
   }
 
+  @ApiOperation({
+    summary: '플레이리스트 구독자 제거',
+    description: '플레이리스트에서 구독자를 제거합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '플레이리스트',
+    type: () => PlaylistEntity,
+  })
+  @ApiBearerAuth()
   @Post('/:key/removeSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
