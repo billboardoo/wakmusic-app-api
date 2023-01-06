@@ -17,6 +17,7 @@ import { ArtistModule } from './artist/artist.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { RedirectModule } from './redirect/redirect.module';
+import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { RedirectModule } from './redirect/redirect.module';
     AuthModule,
     UserModule,
     RedirectModule,
+    PlaylistModule,
   ],
   controllers: [AppController],
   providers: [AppService],
