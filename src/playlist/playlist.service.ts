@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 // import { cryptoRandomStringAsync } from 'crypto-random-string';
@@ -46,7 +46,7 @@ export class PlaylistService {
   async findByClientId(clientId: string): Promise<Array<PlaylistEntity>> {
     return await this.playlistRepository.find({
       where: {
-        clientId: clientId,
+        subscribe: Like(`%${clientId}%`),
       },
     });
   }
