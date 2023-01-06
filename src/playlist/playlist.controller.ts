@@ -27,12 +27,14 @@ export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
 
   @Get('/')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async fineAll(): Promise<Array<PlaylistEntity>> {
     return await this.playlistService.findAll();
   }
 
   @Get('/:id')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.findOne(id);
@@ -55,37 +57,31 @@ export class PlaylistController {
   }
 
   @Get('/:key/detail')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
-  async getDetail(
-    @Param('key') key: string,
-  ): Promise<PlaylistDetailResponseDto> {
+  async getDetail(@Param('key') key: string): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.findOne(key);
     if (!playlist) throw new NotFoundException();
 
-    return {
-      ...playlist,
-      public: playlist.public === 'true',
-      songlist: playlist.songlist.split('|:|'),
-      subscribe: playlist.subscribe.split('|:|'),
-    };
+    return playlist;
   }
 
   @Post('/:key/edit')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async editPlaylist(
     @Param('key') key: string,
     @Body() body: PlaylistEditBodyDto,
-  ): Promise<PlaylistCreateResponseDto> {
+  ): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.edit(key, body);
 
     if (!playlist) throw new InternalServerErrorException();
 
-    return {
-      key: playlist.key,
-    };
+    return playlist;
   }
 
   @Post('/:key/delete')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async deletePlaylist(
     @Req() req: Request,
@@ -97,18 +93,17 @@ export class PlaylistController {
     );
     if (!playlist) throw new InternalServerErrorException();
 
-    return {
-      key: playlist.key,
-    };
+    return playlist;
   }
 
   @Post('/:key/addSubscriber')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async addSubscriber(
     @Req() req: Request,
     @Param('key') key: string,
     @Body('subscriberId') subscriberId: string,
-  ): Promise<PlaylistCreateResponseDto> {
+  ): Promise<PlaylistEntity> {
     if ((req.user as JwtPayload).id !== subscriberId)
       throw new BadRequestException();
 
@@ -119,18 +114,17 @@ export class PlaylistController {
 
     if (!playlist) throw new InternalServerErrorException();
 
-    return {
-      key: playlist.key,
-    };
+    return playlist;
   }
 
   @Post('/:key/removeSubscriber')
+  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async removeSubscriber(
     @Req() req: Request,
     @Param('key') key: string,
     @Body('subscriberId') subscriberId: string,
-  ): Promise<PlaylistCreateResponseDto> {
+  ): Promise<PlaylistEntity> {
     if ((req.user as JwtPayload).id !== subscriberId)
       throw new BadRequestException();
 
@@ -141,8 +135,6 @@ export class PlaylistController {
 
     if (!playlist) throw new InternalServerErrorException();
 
-    return {
-      key: playlist.key,
-    };
+    return playlist;
   }
 }
