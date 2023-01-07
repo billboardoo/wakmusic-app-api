@@ -11,6 +11,8 @@ import {
   UseInterceptors,
   Req,
   BadRequestException,
+  Patch,
+  Delete,
 } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
@@ -26,8 +28,10 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('playlist')
 @Controller('playlist')
 export class PlaylistController {
   constructor(private readonly playlistService: PlaylistService) {}
@@ -118,18 +122,16 @@ export class PlaylistController {
     type: () => PlaylistEntity,
   })
   @ApiBearerAuth()
-  @Post('/:key/edit')
+  @Patch('/:key/edit')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async editPlaylist(
     @Param('key') key: string,
     @Body() body: PlaylistEditBodyDto,
-  ): Promise<PlaylistEntity> {
+  ): Promise<void> {
     const playlist = await this.playlistService.edit(key, body);
 
     if (!playlist) throw new InternalServerErrorException();
-
-    return playlist;
   }
 
   @ApiOperation({
@@ -141,20 +143,18 @@ export class PlaylistController {
     type: () => PlaylistEntity,
   })
   @ApiBearerAuth()
-  @Post('/:key/delete')
+  @Delete('/:key/delete')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async deletePlaylist(
     @Req() req: Request,
     @Param('key') key: string,
-  ): Promise<PlaylistEntity> {
+  ): Promise<void> {
     const playlist = await this.playlistService.delete(
       key,
       (req.user as JwtPayload).id,
     );
     if (!playlist) throw new InternalServerErrorException();
-
-    return playlist;
   }
 
   @ApiOperation({
@@ -166,14 +166,14 @@ export class PlaylistController {
     type: () => PlaylistEntity,
   })
   @ApiBearerAuth()
-  @Post('/:key/addSubscriber')
+  @Patch('/:key/addSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async addSubscriber(
     @Req() req: Request,
     @Param('key') key: string,
     @Body('subscriberId') subscriberId: string,
-  ): Promise<PlaylistEntity> {
+  ): Promise<void> {
     if ((req.user as JwtPayload).id !== subscriberId)
       throw new BadRequestException();
 
@@ -183,8 +183,6 @@ export class PlaylistController {
     );
 
     if (!playlist) throw new InternalServerErrorException();
-
-    return playlist;
   }
 
   @ApiOperation({
@@ -196,14 +194,14 @@ export class PlaylistController {
     type: () => PlaylistEntity,
   })
   @ApiBearerAuth()
-  @Post('/:key/removeSubscriber')
+  @Patch('/:key/removeSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async removeSubscriber(
     @Req() req: Request,
     @Param('key') key: string,
     @Body('subscriberId') subscriberId: string,
-  ): Promise<PlaylistEntity> {
+  ): Promise<void> {
     if ((req.user as JwtPayload).id !== subscriberId)
       throw new BadRequestException();
 
@@ -213,7 +211,5 @@ export class PlaylistController {
     );
 
     if (!playlist) throw new InternalServerErrorException();
-
-    return playlist;
   }
 }

@@ -96,7 +96,7 @@ export class PlaylistService {
   async delete(key: string, clientId: string): Promise<PlaylistEntity> {
     const playlist = await this.findOneByKeyAndClientId(key, clientId);
 
-    if (!playlist) throw new NotFoundException();
+    if (!playlist) throw new NotFoundException('playlist not found');
 
     return await this.playlistRepository.remove(playlist);
   }
