@@ -5,7 +5,7 @@ import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindSongsQueryDto } from './dto/query/find-songs.query.dto';
 import * as fs from 'fs';
-import { lyricsPath, root } from '../utils/path.utils';
+import { lyricsPath, rootPath } from '../utils/path.utils';
 import { FindSongsByLyricsResponseDto } from './dto/response/find-songs-by-lyrics.response.dto';
 import { CheckLyricsQueryDto } from './dto/query/check-lyrics.query.dto';
 import { CheckLyricsResponseDto } from './dto/response/check-lyrics.response.dto';

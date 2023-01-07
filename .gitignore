@@ -41,6 +41,7 @@ lerna-debug.log*
 # Dummy files
 dummy/
 db/
+static/*
 
 # env
 .env

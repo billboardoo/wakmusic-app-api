@@ -10,13 +10,13 @@ import { DailyEntity } from '../entitys/chart/daily.entity';
 import { HourlyEntity } from '../entitys/chart/hourly.entity';
 import { NewsEntity } from '../entitys/main/news.entity';
 import { TeamsEntity } from '../entitys/main/teams.entity';
-import { root } from '../utils/path.utils';
+import { rootPath } from '../utils/path.utils';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { UserEntity } from '../entitys/user/user.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
-  database: `${root}/db/static.db`,
+  database: `${rootPath}/db/static.db`,
   entities: [NewsEntity, TeamsEntity, MainArtistsEntity],
   // synchronize: true,
 };
@@ -24,7 +24,7 @@ export const mainDataSource: TypeOrmModuleOptions = {
 export const chartDataSource: TypeOrmModuleOptions = {
   name: 'chart',
   type: 'sqlite',
-  database: `${root}/db/charts.db`,
+  database: `${rootPath}/db/charts.db`,
   entities: [
     ArtistsEntity,
     UpdatedEntity,
@@ -40,6 +40,6 @@ export const chartDataSource: TypeOrmModuleOptions = {
 export const userDataSource: TypeOrmModuleOptions = {
   name: 'user',
   type: 'sqlite',
-  database: `${root}/db/user.db`,
+  database: `${rootPath}/db/user.db`,
   entities: [PlaylistEntity, UserEntity],
 };
