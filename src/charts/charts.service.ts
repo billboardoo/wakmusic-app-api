@@ -27,6 +27,14 @@ export class ChartsService {
     private readonly updatedRepository: Repository<UpdatedEntity>,
   ) {}
 
+  async findOne(id: string): Promise<TotalEntity> {
+    return await this.totalRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   async findCharts(query: FindChartsQueryDto): Promise<Array<TotalEntity>> {
     const type = query.type;
     const limit = query.limit || 10;

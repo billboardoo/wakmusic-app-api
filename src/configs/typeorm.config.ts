@@ -13,6 +13,8 @@ import { TeamsEntity } from '../entitys/main/teams.entity';
 import { rootPath } from '../utils/path.utils';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { UserEntity } from '../entitys/user/user.entity';
+import { LikeEntity } from '../entitys/like/like.entity';
+import { LikeManagerEntity } from '../entitys/like/manager.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -42,4 +44,12 @@ export const userDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
   database: `${rootPath}/db/user.db`,
   entities: [PlaylistEntity, UserEntity],
+};
+
+export const likeDataSource: TypeOrmModuleOptions = {
+  name: 'like',
+  type: 'sqlite',
+  database: `${rootPath}/db/like.db`,
+  entities: [LikeEntity, LikeManagerEntity],
+  synchronize: false,
 };

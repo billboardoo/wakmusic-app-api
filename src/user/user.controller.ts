@@ -19,6 +19,8 @@ import { Request } from 'express';
 import { PlaylistService } from '../playlist/playlist.service';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { JwtPayload } from '../auth/auth.service';
+import { LikeEntity } from '../entitys/like/like.entity';
+import { LikeService } from '../like/like.service';
 
 @ApiTags('user')
 @Controller('user')
@@ -26,6 +28,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly playlistService: PlaylistService,
+    private readonly likeService: LikeService,
   ) {}
 
   @ApiOperation({
@@ -57,5 +60,13 @@ export class UserController {
       (req.user as JwtPayload).id,
     );
     return playlists;
+  }
+
+  @Get('/likes')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @UseGuards(JwtAuthGuard)
+  async getLikes(@Req() req): Promise<Array<LikeEntity>> {
+    const likes = await this.likeService.findByUserId((req as JwtPayload).id);
+    return likes;
   }
 }

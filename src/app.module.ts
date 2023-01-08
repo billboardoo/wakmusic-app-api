@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   chartDataSource,
+  likeDataSource,
   mainDataSource,
   userDataSource,
 } from './configs/typeorm.config';
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { RedirectModule } from './redirect/redirect.module';
 import { PlaylistModule } from './playlist/playlist.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { PlaylistModule } from './playlist/playlist.module';
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
     TypeOrmModule.forRoot(userDataSource),
+    TypeOrmModule.forRoot(likeDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
     ChartsModule,
     SongsModule,
@@ -35,6 +38,7 @@ import { PlaylistModule } from './playlist/playlist.module';
     UserModule,
     RedirectModule,
     PlaylistModule,
+    LikeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
