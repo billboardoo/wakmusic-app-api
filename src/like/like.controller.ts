@@ -13,11 +13,15 @@ import { LikeService } from './like.service';
 import { LikeEntity } from '../entitys/like/like.entity';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('like')
 @Controller('like')
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
+  @ApiOperation({ summary: '좋아요 수', description: '좋아요를 가져옵니다.' })
+  @ApiOkResponse({ description: '좋아요 entity', type: () => LikeEntity })
   @Get('/:songId')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -28,6 +32,11 @@ export class LikeController {
     return like;
   }
 
+  @ApiOperation({ summary: '좋아요 추가', description: '좋아요를 추가합니다.' })
+  @ApiOkResponse({
+    description: '좋아요가 추가된 entity',
+    type: () => LikeEntity,
+  })
   @Post('/:songId/addLike')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -44,6 +53,11 @@ export class LikeController {
     return like;
   }
 
+  @ApiOperation({ summary: '좋아요 제거', description: '좋아요를 제거합니다.' })
+  @ApiOkResponse({
+    description: '좋아요가 제거된 entity',
+    type: () => LikeEntity,
+  })
   @Post('/:songId/removeLike')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)

@@ -62,6 +62,15 @@ export class UserController {
     return playlists;
   }
 
+  @ApiOperation({
+    summary: '유저가 좋아요를 누른 노래 목록',
+    description: '유저가 좋아요를 누른 노래 목록을 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '노래 목록',
+    type: () => LikeEntity,
+    isArray: true,
+  })
   @Get('/likes')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
