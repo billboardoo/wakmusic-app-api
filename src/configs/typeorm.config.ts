@@ -18,7 +18,7 @@ import { LikeManagerEntity } from '../entitys/like/manager.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
-  database: `${rootPath}/db/static.db`,
+  database: `${rootPath}/src/database/static.db`,
   entities: [NewsEntity, TeamsEntity, MainArtistsEntity],
   // synchronize: true,
 };
@@ -26,7 +26,7 @@ export const mainDataSource: TypeOrmModuleOptions = {
 export const chartDataSource: TypeOrmModuleOptions = {
   name: 'chart',
   type: 'sqlite',
-  database: `${rootPath}/db/charts.db`,
+  database: `${rootPath}/src/database/charts.db`,
   entities: [
     ArtistsEntity,
     UpdatedEntity,
@@ -42,14 +42,14 @@ export const chartDataSource: TypeOrmModuleOptions = {
 export const userDataSource: TypeOrmModuleOptions = {
   name: 'user',
   type: 'sqlite',
-  database: `${rootPath}/db/user.db`,
+  database: `${rootPath}/src/database/user.db`,
   entities: [PlaylistEntity, UserEntity],
 };
 
 export const likeDataSource: TypeOrmModuleOptions = {
   name: 'like',
   type: 'sqlite',
-  database: `${rootPath}/db/like.db`,
+  database: `${rootPath}/src/database/like.db`,
   entities: [LikeEntity, LikeManagerEntity],
   synchronize: false,
 };
