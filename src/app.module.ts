@@ -20,11 +20,16 @@ import { UserModule } from './user/user.module';
 import { RedirectModule } from './redirect/redirect.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { LikeModule } from './like/like.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'build'),
     }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
