@@ -30,6 +30,7 @@ import { PassportModule } from '@nestjs/passport';
     AuthService,
     UserService,
     GoogleStrategy,
+    AppleStrategy,
     NaverStrategy,
     JwtStrategy,
     SessionSerializer,
