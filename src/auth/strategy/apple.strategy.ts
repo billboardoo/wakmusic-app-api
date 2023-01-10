@@ -6,7 +6,7 @@ import {
   Profile,
   VerifyCallback,
 } from 'passport-apple';
-import process from 'process';
+import * as process from 'process';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
