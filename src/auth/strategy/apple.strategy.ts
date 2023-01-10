@@ -6,7 +6,6 @@ import {
   Profile,
   VerifyCallback,
 } from 'passport-apple';
-import { baseUrl } from '../../utils/path.utils';
 import process from 'process';
 import { JwtService } from '@nestjs/jwt';
 
@@ -16,7 +15,7 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     super({
       clientID: process.env.APPLE_CLIENT_ID,
       teamID: process.env.APPLE_TEAM_ID,
-      callbackURL: baseUrl + process.env.APPLE_CALLBACK_URL,
+      callbackURL: process.env.APPLE_CALLBACK_URL,
       failureRedirect: process.env.DOMAIN,
       keyID: process.env.APPLE_KEY_ID,
       privateKeyString: process.env.APPLE_KEY.replace(/\\n/g, '\n'),

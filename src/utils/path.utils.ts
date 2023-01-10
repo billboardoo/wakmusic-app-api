@@ -8,5 +8,3 @@ export const staticNewsPath = resolve(rootPath, 'src/images/news');
 export const staticArtistPath = resolve(rootPath, 'src/images/artist');
 export const staticProfilePath = resolve(rootPath, 'src/images/profile');
 export const staticPlaylistPath = resolve(rootPath, 'src/images/playlist');
-
-export const baseUrl = 'http://localhost:3000/api';
