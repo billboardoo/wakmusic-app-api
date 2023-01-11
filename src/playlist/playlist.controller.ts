@@ -45,10 +45,8 @@ export class PlaylistController {
     type: () => PlaylistEntity,
     isArray: true,
   })
-  @ApiBearerAuth()
   @Get('/')
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
   async fineAll(): Promise<Array<PlaylistEntity>> {
     return await this.playlistService.findAll();
   }
@@ -61,10 +59,8 @@ export class PlaylistController {
     description: '플레이리스트',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
   @Get('/:id')
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
   async findOne(@Param('id') id: string): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.findOne(id);
     if (!playlist) throw new NotFoundException();
@@ -102,10 +98,8 @@ export class PlaylistController {
     description: '플레이리스트 세부정보',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
   @Get('/:key/detail')
   @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
   async getDetail(@Param('key') key: string): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.findOne(key);
     if (!playlist) throw new NotFoundException();
