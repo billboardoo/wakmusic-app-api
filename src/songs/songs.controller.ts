@@ -33,6 +33,15 @@ export class SongsController {
     return await this.songsService.findNewSongsByMonth();
   }
 
+  @ApiOperation({
+    summary: '그룹별 최신곡 목록',
+    description: '각 그룹의 최신곡 10개를 반환합니다.',
+  })
+  @ApiOkResponse({
+    description: '최신곡 목록',
+    type: () => TotalEntity,
+    isArray: true,
+  })
   @Get('/new/:group')
   async findNewSongsByGroup(
     @Param() param: FindNewSongsParamDto,
