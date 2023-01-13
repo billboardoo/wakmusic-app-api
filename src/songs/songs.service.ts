@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { moment } from '../utils/moment.utils';
 import { In, Repository } from 'typeorm';
@@ -10,14 +10,31 @@ import { FindSongsByLyricsResponseDto } from './dto/response/find-songs-by-lyric
 import { CheckLyricsQueryDto } from './dto/query/check-lyrics.query.dto';
 import { CheckLyricsResponseDto } from './dto/response/check-lyrics.response.dto';
 import { FindSongsByPeriodQueryDto } from './dto/query/find-songs-by-period.query.dto';
+import { ArtistService } from '../artist/artist.service';
 
 @Injectable()
 export class SongsService {
   constructor(
+    @Inject(ArtistService)
+    private readonly artistService: ArtistService,
+
     @InjectRepository(TotalEntity, 'chart')
     private readonly totalRepository: Repository<TotalEntity>,
   ) {}
-  async findNewSongs(): Promise<Array<TotalEntity>> {
+
+  async findNewSongs(artist?: string, limit = 10): Promise<Array<TotalEntity>> {
+    return await this.totalRepository.find({
+      where: {
+        artist: artist || null,
+      },
+      order: {
+        date: 'desc',
+      },
+      take: limit,
+    });
+  }
+
+  async findNewSongsByMonth(): Promise<Array<TotalEntity>> {
     const time = moment();
     const dateNow = time.format('YYMMDD');
     const dateStart = time.subtract(1, 'months').format('YYMMDD');
@@ -27,6 +44,32 @@ export class SongsService {
       .andWhere('total.date >= :dateStart', { dateStart });
 
     return await newSongs.getMany();
+  }
+
+  async findNewSongsByGroup(group: string): Promise<Array<TotalEntity>> {
+    if (group == 'all') return await this.findNewSongs();
+
+    const artists = await this.artistService.findByGroup(group);
+
+    const songs: Array<TotalEntity> = [];
+
+    for (const artist of artists) {
+      const artistNewSongs = await this.findNewSongs(artist.name);
+      songs.push(...artistNewSongs);
+    }
+
+    songs.sort(this._sortSongsByDateDesc);
+
+    if (songs.length < 10) return songs;
+
+    return songs.slice(0, 10);
+  }
+
+  private _sortSongsByDateDesc(a: TotalEntity, b: TotalEntity): number {
+    if (a.date > b.date) return -1;
+    if (a.date < b.date) return 1;
+
+    return 0;
   }
 
   async findSongsByPeriod(
@@ -55,7 +98,9 @@ export class SongsService {
     return songs.slice(start, start + 30);
   }
 
-  async findSongs(query: FindSongsQueryDto): Promise<Array<TotalEntity>> {
+  async findSongsBySearch(
+    query: FindSongsQueryDto,
+  ): Promise<Array<TotalEntity>> {
     const keyword = decodeURI(query.keyword);
 
     let sort: string;

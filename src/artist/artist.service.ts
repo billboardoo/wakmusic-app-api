@@ -23,6 +23,14 @@ export class ArtistService {
     });
   }
 
+  async findByGroup(group: string): Promise<Array<MainArtistsEntity>> {
+    return await this.mainArtistsRepository.find({
+      where: {
+        group: group,
+      },
+    });
+  }
+
   async find(query: FindQueryDto): Promise<Array<TotalEntity>> {
     const start = query.start || 0;
 

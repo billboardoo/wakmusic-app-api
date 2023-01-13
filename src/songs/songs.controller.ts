@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { FindSongsByPeriodQueryDto } from './dto/query/find-songs-by-period.query.dto';
@@ -12,6 +12,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { FindNewSongsParamDto } from './dto/param/find-new-songs.param.dto';
 
 @ApiTags('songs')
 @Controller('songs')
@@ -28,8 +29,17 @@ export class SongsController {
     isArray: true,
   })
   @Get('/new/monthly')
-  async findNewSongs(): Promise<Array<TotalEntity>> {
-    return await this.songsService.findNewSongs();
+  async findNewSongsByMonth(): Promise<Array<TotalEntity>> {
+    return await this.songsService.findNewSongsByMonth();
+  }
+
+  @Get('/new/:group')
+  async findNewSongsByGroup(
+    @Param() param: FindNewSongsParamDto,
+  ): Promise<Array<TotalEntity>> {
+    const newSongs = await this.songsService.findNewSongsByGroup(param.group);
+
+    return newSongs;
   }
 
   @ApiOperation({
@@ -59,10 +69,10 @@ export class SongsController {
     isArray: true,
   })
   @Get('/search')
-  async findSongs(
+  async findSongsBySearch(
     @Query() query: FindSongsQueryDto,
   ): Promise<Array<TotalEntity>> {
-    return await this.songsService.findSongs(query);
+    return await this.songsService.findSongsBySearch(query);
   }
 
   @ApiOperation({
