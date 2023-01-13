@@ -8,7 +8,12 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService, JwtPayload } from './auth.service';
 import { NextFunction, Request, Response } from 'express';
 import { UserService } from '../user/user.service';
@@ -96,6 +101,7 @@ export class AuthController {
     };
   }
 
+  @ApiCookieAuth('token')
   @Get('/logout')
   @UseGuards(JwtAuthGuard)
   async logout(

@@ -14,6 +14,7 @@ import {
   staticPlaylistPath,
   staticProfilePath,
 } from './utils/path.utils';
+import { setupSwagger } from './utils/swagger.utils';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -57,18 +58,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
 
-  const config = new DocumentBuilder()
-    .addCookieAuth()
-    .setTitle('wakmusic app backend')
-    .setDescription('왁타버스 뮤직 api 설명서')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document, {
-    swaggerOptions: {
-      supportedSubmitMethods: [],
-    },
-  });
+  setupSwagger(app);
 
   await app.listen(8080);
 }

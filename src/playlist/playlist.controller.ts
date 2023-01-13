@@ -25,6 +25,7 @@ import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
 import {
   ApiBearerAuth,
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -76,7 +77,7 @@ export class PlaylistController {
     description: '플레이리스트',
     type: () => PlaylistCreateResponseDto,
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth('token')
   @Post('/create')
   @UseGuards(JwtAuthGuard)
   async create(
@@ -115,7 +116,7 @@ export class PlaylistController {
     description: '수정된 플레이리스트',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth('token')
   @Patch('/:key/edit')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -136,7 +137,7 @@ export class PlaylistController {
     description: '삭제된 플레이리스트',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth('token')
   @Delete('/:key/delete')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -159,7 +160,7 @@ export class PlaylistController {
     description: '플레이리스트',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth('token')
   @Patch('/:key/addSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -187,7 +188,7 @@ export class PlaylistController {
     description: '플레이리스트',
     type: () => PlaylistEntity,
   })
-  @ApiBearerAuth()
+  @ApiCookieAuth('token')
   @Patch('/:key/removeSubscriber')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)

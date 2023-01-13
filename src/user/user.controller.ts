@@ -14,7 +14,13 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
 import { UserEntity } from '../entitys/user/user.entity';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Request } from 'express';
 import { PlaylistService } from '../playlist/playlist.service';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
@@ -35,6 +41,7 @@ export class UserController {
     summary: '프로필 설정',
     description: '프로필을 설정합니다.',
   })
+  @ApiCookieAuth('token')
   @Post('/profile/set')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
@@ -52,6 +59,7 @@ export class UserController {
     type: () => PlaylistEntity,
     isArray: true,
   })
+  @ApiCookieAuth('token')
   @Get('/playlists')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
@@ -71,6 +79,7 @@ export class UserController {
     type: () => LikeEntity,
     isArray: true,
   })
+  @ApiCookieAuth('token')
   @Get('/likes')
   @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
