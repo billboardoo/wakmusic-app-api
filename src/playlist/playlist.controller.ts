@@ -31,6 +31,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -50,6 +51,22 @@ export class PlaylistController {
   @UseInterceptors(ClassSerializerInterceptor)
   async fineAll(): Promise<Array<PlaylistEntity>> {
     return await this.playlistService.findAll();
+  }
+
+  @ApiOperation({
+    summary: '추천 플레이리스트 목록',
+    description: '왁타버스 뮤직팀이 추천하는 플레이리스트 목록을 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '추천 플레이리스트 목록',
+    type: () => RecommendPlaylistEntity,
+    isArray: true,
+  })
+  @Get('/recommended')
+  async findPlaylistRecommended(): Promise<Array<RecommendPlaylistEntity>> {
+    const playlists = await this.playlistService.findPlaylistRecommended();
+
+    return playlists;
   }
 
   @ApiOperation({

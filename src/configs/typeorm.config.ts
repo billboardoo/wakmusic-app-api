@@ -15,6 +15,7 @@ import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { UserEntity } from '../entitys/user/user.entity';
 import { LikeEntity } from '../entitys/like/like.entity';
 import { LikeManagerEntity } from '../entitys/like/manager.entity';
+import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -50,6 +51,6 @@ export const likeDataSource: TypeOrmModuleOptions = {
   name: 'like',
   type: 'sqlite',
   database: `${rootPath}/src/database/like.db`,
-  entities: [LikeEntity, LikeManagerEntity],
+  entities: [LikeEntity, LikeManagerEntity, RecommendPlaylistEntity],
   synchronize: false,
 };

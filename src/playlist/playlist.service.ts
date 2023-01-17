@@ -8,6 +8,7 @@ import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { Like, Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
+import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 // import { cryptoRandomStringAsync } from 'crypto-random-string';
 
 @Injectable()
@@ -15,6 +16,9 @@ export class PlaylistService {
   constructor(
     @InjectRepository(PlaylistEntity, 'user')
     private readonly playlistRepository: Repository<PlaylistEntity>,
+
+    @InjectRepository(RecommendPlaylistEntity, 'like')
+    private readonly recommendRepository: Repository<RecommendPlaylistEntity>,
   ) {}
 
   async findAll(): Promise<Array<PlaylistEntity>> {
@@ -29,6 +33,16 @@ export class PlaylistService {
         key: id,
       },
     });
+  }
+
+  async findPlaylistRecommended(): Promise<Array<RecommendPlaylistEntity>> {
+    const playlists = await this.recommendRepository.find({
+      where: {
+        public: true,
+      },
+    });
+
+    return playlists;
   }
 
   async findOneByKeyAndClientId(

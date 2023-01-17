@@ -14,11 +14,15 @@ import { TotalEntity } from '../entitys/chart/total.entity';
 import { UpdatedEntity } from '../entitys/chart/updated.entity';
 import { ChartsModule } from '../charts/charts.module';
 import { LikeEntity } from '../entitys/like/like.entity';
+import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, PlaylistEntity], 'user'),
-    TypeOrmModule.forFeature([LikeEntity, LikeManagerEntity], 'like'),
+    TypeOrmModule.forFeature(
+      [LikeEntity, LikeManagerEntity, RecommendPlaylistEntity],
+      'like',
+    ),
     TypeOrmModule.forFeature([TotalEntity, UpdatedEntity], 'chart'),
     PlaylistModule,
     LikeModule,
