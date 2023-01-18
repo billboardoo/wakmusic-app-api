@@ -11,6 +11,7 @@ import {
   staticArtistPath,
   staticNewsPath,
   staticPath,
+  staticPlaylistIconPath,
   staticPlaylistPath,
   staticProfilePath,
 } from './utils/path.utils';
@@ -40,6 +41,9 @@ async function bootstrap() {
   });
   app.useStaticAssets(staticPlaylistPath, {
     prefix: '/static/playlist',
+  });
+  app.useStaticAssets(staticPlaylistIconPath, {
+    prefix: '/static/playlist/icon',
   });
   app.useStaticAssets(staticProfilePath, {
     prefix: '/static/profile',

@@ -8,3 +8,4 @@ export const staticNewsPath = resolve(rootPath, 'src/images/news');
 export const staticArtistPath = resolve(rootPath, 'src/images/artist');
 export const staticProfilePath = resolve(rootPath, 'src/images/profile');
 export const staticPlaylistPath = resolve(rootPath, 'src/images/playlist');
+export const staticPlaylistIconPath = resolve(rootPath, 'src/images/pl-icons');
