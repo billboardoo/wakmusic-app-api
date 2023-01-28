@@ -1,4 +1,10 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { SongsService } from './songs.service';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { FindSongsByPeriodQueryDto } from './dto/query/find-songs-by-period.query.dto';
@@ -13,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { FindNewSongsParamDto } from './dto/param/find-new-songs.param.dto';
+import { FindLyricsResponseDto } from './dto/response/find-lyrics.response.dto';
 
 @ApiTags('songs')
 @Controller('songs')
@@ -112,6 +119,20 @@ export class SongsController {
   async checkLyrics(
     @Query() query: CheckLyricsQueryDto,
   ): Promise<CheckLyricsResponseDto> {
-    return await this.songsService.checkLyrics(query);
+    const isLyricExist = await this.songsService.checkLyrics(query);
+    if (!isLyricExist) return { status: 404 };
+
+    return { status: 200 };
+  }
+
+  @Get('lyrics/:id')
+  async findLyrics(
+    @Param('id') id: string,
+  ): Promise<Array<FindLyricsResponseDto>> {
+    const lyrics = await this.songsService.findLyrics(id);
+
+    if (!lyrics) throw new NotFoundException();
+
+    return lyrics as Array<FindLyricsResponseDto>;
   }
 }

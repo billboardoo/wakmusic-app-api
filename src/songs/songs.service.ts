@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { moment } from '../utils/moment.utils';
 import { In, Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { CheckLyricsQueryDto } from './dto/query/check-lyrics.query.dto';
 import { CheckLyricsResponseDto } from './dto/response/check-lyrics.response.dto';
 import { FindSongsByPeriodQueryDto } from './dto/query/find-songs-by-period.query.dto';
 import { ArtistService } from '../artist/artist.service';
+import * as vttParser from 'node-webvtt';
 
 @Injectable()
 export class SongsService {
@@ -149,25 +150,27 @@ export class SongsService {
     return songs.filter((song) => !lyrics.includes(song.id + '.vtt'));
   }
 
-  async checkLyrics(
-    query: CheckLyricsQueryDto,
-  ): Promise<CheckLyricsResponseDto> {
+  async checkLyrics(query: CheckLyricsQueryDto): Promise<boolean> {
     try {
       const checkFile = fs.existsSync(`${lyricsPath}/${query.id}.vtt`);
       if (checkFile) {
-        return {
-          status: 200,
-        };
+        return true;
       } else {
-        return {
-          status: 404,
-        };
+        return false;
       }
     } catch (err) {
       console.log(err);
-      return {
-        status: 404,
-      };
+      return false;
     }
+  }
+
+  async findLyrics(id: string): Promise<any> {
+    const isLyricsExist = await this.checkLyrics({ id: id });
+
+    if (!isLyricsExist) return null;
+
+    const lyricsFile = fs.readFileSync(`${lyricsPath}/${id}.vtt`, 'utf8');
+
+    return vttParser.parse(lyricsFile, { strict: false }).cues;
   }
 }
