@@ -125,6 +125,16 @@ export class SongsController {
     return { status: 200 };
   }
 
+  @ApiOperation({
+    summary: '가사 가져오기',
+    description:
+      '가사 파일을 가져옵니다.\n사용하기 쉽게 json형태로 파싱된 데이터를 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: 'json으로 파싱된 vtt 파일',
+    type: () => FindLyricsResponseDto,
+    isArray: true,
+  })
   @Get('lyrics/:id')
   async findLyrics(
     @Param('id') id: string,
