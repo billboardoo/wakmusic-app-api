@@ -96,7 +96,7 @@ export class AuthController {
 
     return {
       ...req.user,
-      profile: user.profile || 'default',
+      profile: user.profile || 'panchi',
       status: 200,
     };
   }
