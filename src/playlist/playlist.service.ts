@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +11,8 @@ import { Like, Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { UserEntity } from '../entitys/user/user.entity';
+import { UserService } from '../user/user.service';
 // import { cryptoRandomStringAsync } from 'crypto-random-string';
 
 @Injectable()
@@ -16,7 +20,6 @@ export class PlaylistService {
   constructor(
     @InjectRepository(PlaylistEntity, 'user')
     private readonly playlistRepository: Repository<PlaylistEntity>,
-
     @InjectRepository(RecommendPlaylistEntity, 'like')
     private readonly recommendRepository: Repository<RecommendPlaylistEntity>,
   ) {}
@@ -52,7 +55,7 @@ export class PlaylistService {
     return await this.playlistRepository.findOne({
       where: {
         key: key,
-        clientId: clientId,
+        creator_id: clientId,
       },
     });
   }
@@ -60,7 +63,7 @@ export class PlaylistService {
   async findByClientId(clientId: string): Promise<Array<PlaylistEntity>> {
     return await this.playlistRepository.find({
       where: {
-        subscribe: Like(`%${clientId}%`),
+        creator_id: clientId,
       },
     });
   }
@@ -81,13 +84,9 @@ export class PlaylistService {
 
     newPlaylist.key = key;
     newPlaylist.title = body.title;
-    newPlaylist.creator = body.creator;
-    newPlaylist.platform = body.platform;
+    newPlaylist.creator_id = body.clientId;
     newPlaylist.image = body.image;
-    newPlaylist.songlist = body.songlist.join('|:|');
-    newPlaylist.public = String(body.public);
-    newPlaylist.clientId = body.clientId;
-    newPlaylist.subscribe = body.clientId;
+    newPlaylist.songlist = body.songlist;
 
     return await this.playlistRepository.save(newPlaylist);
   }
@@ -100,9 +99,7 @@ export class PlaylistService {
     if (!currentPlaylist) throw new NotFoundException();
 
     currentPlaylist.title = body.title;
-    currentPlaylist.image = body.image;
-    currentPlaylist.songlist = body.songlist.join('|:|');
-    currentPlaylist.public = String(body.public);
+    currentPlaylist.songlist = body.songlist;
 
     return await this.playlistRepository.save(currentPlaylist);
   }
@@ -115,38 +112,22 @@ export class PlaylistService {
     return await this.playlistRepository.remove(playlist);
   }
 
-  async addSubscriber(
+  async addToMyPlaylist(
     key: string,
-    subscriberId: string,
+    creatorId: string,
   ): Promise<PlaylistEntity> {
     const playlist = await this.findOne(key);
     if (!playlist) throw new NotFoundException();
+    if (playlist.creator_id == creatorId)
+      throw new BadRequestException(
+        '개인의 플레이리스트는 추가할 수 없습니다.',
+      );
 
-    const subscribers = playlist.subscribe.split('|:|');
-    if (subscribers.includes(subscriberId))
-      throw new BadRequestException('already subscribed user');
-
-    subscribers.push(subscriberId);
-    playlist.subscribe = subscribers.join('|:|');
-
-    return await this.playlistRepository.save(playlist);
-  }
-
-  async removeSubscriber(
-    key: string,
-    subscriberId: string,
-  ): Promise<PlaylistEntity> {
-    const playlist = await this.findOne(key);
-    if (!playlist) throw new NotFoundException();
-
-    let subscribers = playlist.subscribe.split('|:|');
-    if (!subscribers.includes(subscriberId))
-      throw new BadRequestException('user not subscribed');
-
-    subscribers = subscribers.filter((e) => e !== subscriberId);
-    playlist.subscribe = subscribers.join('|:|');
-
-    return await this.playlistRepository.save(playlist);
+    const newPlaylist = await this.create({
+      ...playlist,
+      clientId: creatorId,
+    });
+    return newPlaylist;
   }
 
   private createKey(num = 10) {
