@@ -96,7 +96,8 @@ export class PlaylistService {
       key,
       body.clientId,
     );
-    if (!currentPlaylist) throw new NotFoundException();
+    if (!currentPlaylist)
+      throw new NotFoundException('플레이리스트가 없습니다.');
 
     currentPlaylist.title = body.title;
     currentPlaylist.songlist = body.songlist;
