@@ -4,6 +4,7 @@ import { PlaylistService } from './playlist.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [

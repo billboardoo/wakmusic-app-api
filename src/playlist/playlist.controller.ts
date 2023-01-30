@@ -32,6 +32,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { AddToMyPlaylistBodyDto } from './dto/body/add-to-my-playlist.body.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -48,7 +49,6 @@ export class PlaylistController {
     isArray: true,
   })
   @Get('/')
-  @UseInterceptors(ClassSerializerInterceptor)
   async fineAll(): Promise<Array<PlaylistEntity>> {
     return await this.playlistService.findAll();
   }
@@ -77,10 +77,9 @@ export class PlaylistController {
     description: '플레이리스트',
     type: () => PlaylistEntity,
   })
-  @Get('/:id')
-  @UseInterceptors(ClassSerializerInterceptor)
-  async findOne(@Param('id') id: string): Promise<PlaylistEntity> {
-    const playlist = await this.playlistService.findOne(id);
+  @Get('/:key')
+  async findOne(@Param('key') key: string): Promise<PlaylistEntity> {
+    const playlist = await this.playlistService.findOne(key);
     if (!playlist) throw new NotFoundException();
 
     return playlist;
@@ -117,7 +116,6 @@ export class PlaylistController {
     type: () => PlaylistEntity,
   })
   @Get('/:key/detail')
-  @UseInterceptors(ClassSerializerInterceptor)
   async getDetail(@Param('key') key: string): Promise<PlaylistEntity> {
     const playlist = await this.playlistService.findOne(key);
     if (!playlist) throw new NotFoundException();
@@ -135,7 +133,6 @@ export class PlaylistController {
   })
   @ApiCookieAuth('token')
   @Patch('/:key/edit')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async editPlaylist(
     @Param('key') key: string,
@@ -156,7 +153,6 @@ export class PlaylistController {
   })
   @ApiCookieAuth('token')
   @Delete('/:key/delete')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async deletePlaylist(
     @Req() req: Request,
@@ -170,58 +166,29 @@ export class PlaylistController {
   }
 
   @ApiOperation({
-    summary: '플레이리스트 구독자 추가',
-    description: '플레이리스트에 구독자를 추가합니다.',
+    summary: '플레이리스트 가져오기',
+    description: '다른 사람의 플레이리스트를 가져옵니다.',
   })
   @ApiCreatedResponse({
     description: '플레이리스트',
     type: () => PlaylistEntity,
   })
   @ApiCookieAuth('token')
-  @Patch('/:key/addSubscriber')
-  @UseInterceptors(ClassSerializerInterceptor)
+  @Post('/:key/addToMyPlaylist')
   @UseGuards(JwtAuthGuard)
   async addSubscriber(
-    @Req() req: Request,
     @Param('key') key: string,
-    @Body('subscriberId') subscriberId: string,
-  ): Promise<void> {
-    if ((req.user as JwtPayload).id !== subscriberId)
-      throw new BadRequestException();
-
-    const playlist = await this.playlistService.addSubscriber(
+    @Body() body: AddToMyPlaylistBodyDto,
+  ): Promise<PlaylistCreateResponseDto> {
+    const playlist = await this.playlistService.addToMyPlaylist(
       key,
-      subscriberId,
+      body.creatorId,
     );
 
     if (!playlist) throw new InternalServerErrorException();
-  }
 
-  @ApiOperation({
-    summary: '플레이리스트 구독자 제거',
-    description: '플레이리스트에서 구독자를 제거합니다.',
-  })
-  @ApiCreatedResponse({
-    description: '플레이리스트',
-    type: () => PlaylistEntity,
-  })
-  @ApiCookieAuth('token')
-  @Patch('/:key/removeSubscriber')
-  @UseInterceptors(ClassSerializerInterceptor)
-  @UseGuards(JwtAuthGuard)
-  async removeSubscriber(
-    @Req() req: Request,
-    @Param('key') key: string,
-    @Body('subscriberId') subscriberId: string,
-  ): Promise<void> {
-    if ((req.user as JwtPayload).id !== subscriberId)
-      throw new BadRequestException();
-
-    const playlist = await this.playlistService.removeSubscriber(
-      key,
-      subscriberId,
-    );
-
-    if (!playlist) throw new InternalServerErrorException();
+    return {
+      key: playlist.key,
+    };
   }
 }
