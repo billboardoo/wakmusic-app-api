@@ -175,7 +175,7 @@ export class PlaylistController {
   })
   @ApiCreatedResponse({
     description: '플레이리스트',
-    type: () => PlaylistEntity,
+    type: () => PlaylistCreateResponseDto,
   })
   @ApiCookieAuth('token')
   @Post('/:key/addToMyPlaylist')
