@@ -174,7 +174,7 @@ export class PlaylistController {
   @ApiCookieAuth('token')
   @Post('/:key/addToMyPlaylist')
   @UseGuards(JwtAuthGuard)
-  async addSubscriber(
+  async addToMyPlaylist(
     @Param('key') key: string,
     @Body() body: AddToMyPlaylistBodyDto,
   ): Promise<PlaylistCreateResponseDto> {
