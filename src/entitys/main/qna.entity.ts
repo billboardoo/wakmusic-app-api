@@ -25,7 +25,7 @@ export class QnaEntity extends BaseEntity {
   @Column()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'timestamp 형식' })
   @Column()
   create_at: number;
 }
