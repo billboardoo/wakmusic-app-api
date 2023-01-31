@@ -18,16 +18,12 @@ import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, PlaylistEntity], 'user'),
-    TypeOrmModule.forFeature(
-      [LikeEntity, LikeManagerEntity, RecommendPlaylistEntity],
-      'like',
-    ),
-    TypeOrmModule.forFeature([TotalEntity, UpdatedEntity], 'chart'),
+    TypeOrmModule.forFeature([UserEntity], 'user'),
     PlaylistModule,
     LikeModule,
   ],
-  providers: [UserService, PlaylistService, LikeService, ChartsService],
+  providers: [UserService],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule {}

@@ -12,10 +12,10 @@ import { UpdatedEntity } from '../entitys/chart/updated.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([LikeEntity, LikeManagerEntity], 'like'),
-    TypeOrmModule.forFeature([TotalEntity, UpdatedEntity], 'chart'),
     ChartsModule,
   ],
-  providers: [LikeService, ChartsService],
+  providers: [LikeService],
   controllers: [LikeController],
+  exports: [LikeService],
 })
 export class LikeModule {}

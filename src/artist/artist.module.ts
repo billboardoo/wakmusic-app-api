@@ -13,5 +13,6 @@ import { TotalEntity } from '../entitys/chart/total.entity';
   ],
   controllers: [ArtistController],
   providers: [ArtistService],
+  exports: [ArtistService],
 })
 export class ArtistModule {}

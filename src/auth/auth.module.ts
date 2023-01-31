@@ -19,16 +19,14 @@ import { PassportModule } from '@nestjs/passport';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),
-    TypeOrmModule.forFeature([UserEntity], 'user'),
-    UserModule,
     PassportModule.register({
       session: true,
     }),
+    UserModule,
   ],
   controllers: [AuthController],
   providers: [
     AuthService,
-    UserService,
     GoogleStrategy,
     AppleStrategy,
     NaverStrategy,
