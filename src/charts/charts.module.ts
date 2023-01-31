@@ -9,5 +9,6 @@ import { UpdatedEntity } from '../entitys/chart/updated.entity';
   imports: [TypeOrmModule.forFeature([TotalEntity, UpdatedEntity], 'chart')],
   controllers: [ChartsController],
   providers: [ChartsService],
+  exports: [ChartsService],
 })
 export class ChartsModule {}
