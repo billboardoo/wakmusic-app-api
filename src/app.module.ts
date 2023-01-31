@@ -22,6 +22,7 @@ import { PlaylistModule } from './playlist/playlist.module';
 import { LikeModule } from './like/like.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { QnaModule } from './qna/qna.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { join } from 'path';
     RedirectModule,
     PlaylistModule,
     LikeModule,
+    QnaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
