@@ -127,10 +127,7 @@ export class PlaylistController {
     summary: '플레이리스트 수정',
     description: '플레이리스트를 수정합니다.',
   })
-  @ApiCreatedResponse({
-    description: '수정된 플레이리스트',
-    type: () => PlaylistEntity,
-  })
+  @ApiCreatedResponse()
   @ApiCookieAuth('token')
   @Patch('/:key/edit')
   @UseGuards(JwtAuthGuard)
@@ -151,10 +148,7 @@ export class PlaylistController {
     summary: '플레이리스트 삭제',
     description: '플레이리스트를 삭제합니다',
   })
-  @ApiCreatedResponse({
-    description: '삭제된 플레이리스트',
-    type: () => PlaylistEntity,
-  })
+  @ApiCreatedResponse()
   @ApiCookieAuth('token')
   @Delete('/:key/delete')
   @UseGuards(JwtAuthGuard)
