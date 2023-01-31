@@ -10,6 +10,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
+    "restart:prod": "pm2 restart wakmusic-app",
+    "stop:prod": "pm2 stop wakmusic-app",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "pm2 start dist/src/main.js --name=wakmusic-app",
