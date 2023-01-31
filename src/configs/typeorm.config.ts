@@ -16,11 +16,12 @@ import { UserEntity } from '../entitys/user/user.entity';
 import { LikeEntity } from '../entitys/like/like.entity';
 import { LikeManagerEntity } from '../entitys/like/manager.entity';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { QnaEntity } from '../entitys/main/qna.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
   database: `${rootPath}/src/database/static.db`,
-  entities: [NewsEntity, TeamsEntity, MainArtistsEntity],
+  entities: [NewsEntity, TeamsEntity, MainArtistsEntity, QnaEntity],
   // synchronize: true,
 };
 
