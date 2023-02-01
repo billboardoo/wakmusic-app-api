@@ -30,7 +30,7 @@ export class MainArtistsEntity extends BaseEntity {
 
   @ApiProperty({
     description: 'HEX 색깔 코드',
-    example: '5EA585|100,5EA585|0',
+    example: '5EA585|100|0,5EA585|0|0',
   })
   @Transform(({ value }) => value.split(',').map((data) => data.split('|')))
   @Column()
