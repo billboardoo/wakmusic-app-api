@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 @Entity({ name: 'artists' })
 export class MainArtistsEntity extends BaseEntity {
@@ -27,7 +28,11 @@ export class MainArtistsEntity extends BaseEntity {
   @Column()
   description: string;
 
-  @ApiProperty({ description: 'HEX 색깔 코드 (text 형식)' })
+  @ApiProperty({
+    description: 'HEX 색깔 코드',
+    example: '5EA585|100,5EA585|0',
+  })
+  @Transform(({ value }) => value.split(',').map((data) => data.split('|')))
   @Column()
   color: string;
 
