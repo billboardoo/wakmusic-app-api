@@ -32,7 +32,7 @@ import { rootPath } from "./utils/path.utils";
     }),
     ServeStaticModule.forRoot({
       rootPath: join(rootPath, 'build'),
-      exclude: ['/api*'],
+      exclude: ['/api/(.*)'],
     }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
