@@ -14,11 +14,11 @@ export class UserEntity extends BaseEntity {
 
   @ApiProperty({ description: '프로필 타입', nullable: true })
   @Transform(({ value }) => (value ? value : 'panchi'))
-  @Column()
+  @Column({ nullable: true })
   profile: string;
 
   @ApiProperty({ description: 'oauth 표시 이름' })
-  @Column()
+  @Column({ nullable: true })
   displayName: string;
 
   @ApiProperty({ description: '처음 로그인 시간 (datetime)' })
