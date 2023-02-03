@@ -19,9 +19,7 @@ import { PassportModule } from '@nestjs/passport';
     JwtModule.register({
       secret: process.env.JWT_SECRET,
     }),
-    PassportModule.register({
-      session: true,
-    }),
+    PassportModule.register({}),
     UserModule,
   ],
   controllers: [AuthController],

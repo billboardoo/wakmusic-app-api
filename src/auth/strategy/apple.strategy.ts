@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import {
   Strategy,
@@ -8,6 +8,8 @@ import {
 } from 'passport-apple';
 import * as process from 'process';
 import { JwtService } from '@nestjs/jwt';
+import { last } from 'rxjs';
+import { OauthDto } from '../dto/oauth.dto';
 
 @Injectable()
 export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
@@ -29,12 +31,23 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     idToken: string,
     profile: Profile,
     verified: VerifyCallback,
-  ) {
+  ): Promise<OauthDto> {
+    const decodedObj = this.jwtService.decode(idToken);
+    if (!decodedObj.sub) throw new UnauthorizedException();
+
+    const { firstName, lastName } = profile;
+
     return {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      ...this.jwtService.decode(idToken),
+      id: decodedObj.sub,
+      displayName: `${firstName} ${lastName}`,
       provider: 'apple',
     };
+
+    // return {
+    //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //   // @ts-ignore
+    //   ...this.jwtService.decode(idToken),
+    //   provider: 'apple',
+    // };
   }
 }
