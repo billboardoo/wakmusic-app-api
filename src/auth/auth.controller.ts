@@ -45,7 +45,6 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    console.log(req.user);
     const { accessToken } = await this.authService.login(req.user as OauthDto);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });

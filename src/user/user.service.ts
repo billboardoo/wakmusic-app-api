@@ -66,7 +66,6 @@ export class UserService {
 
     return await this.userRepository.save(user);
   }
-  // 1675316173132
 
   checkFirstLogin(first_login_time: number): boolean {
     const now = new Date();
