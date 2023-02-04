@@ -21,7 +21,9 @@ import { NaverAuthGuard } from './guard/naver-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { AppleAuthGuard } from './guard/apple-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
-import { AuthResponse } from './dto/response/auth.response';
+import { AuthResponseDto } from './dto/response/auth.response.dto';
+import { OauthDto } from './dto/oauth.dto';
+import { UserEntity } from '../entitys/user/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -43,7 +45,7 @@ export class AuthController {
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const { accessToken } = await this.authService.login(req.user);
+    const { accessToken } = await this.authService.login(req.user as OauthDto);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -59,7 +61,7 @@ export class AuthController {
   @Post('/callback/apple')
   @UseGuards(AppleAuthGuard)
   async appleAuthCallback(@Req() req: Request, @Res() res: Response) {
-    const { accessToken } = await this.authService.login(req.user);
+    const { accessToken } = await this.authService.login(req.user as OauthDto);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -75,7 +77,7 @@ export class AuthController {
   @Get('/callback/naver')
   @UseGuards(NaverAuthGuard)
   async naverAuthCallback(@Req() req: Request, @Res() res: Response) {
-    const { accessToken } = await this.authService.login(req.user);
+    const { accessToken } = await this.authService.login(req.user as OauthDto);
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -83,39 +85,23 @@ export class AuthController {
   }
 
   @Get('/')
-  async auth(@Req() req: Request): Promise<AuthResponse> {
-    if (!req.session || !req.user) return { status: 404 };
-
-    let userId: string;
-    const check = req as any;
-    if (check.user.provider == 'google') userId = check.user.id;
-    else if (check.user.provider == 'naver') userId = check.user._json.id;
-    else if (check.user.provider == 'apple') userId = check.user.sub;
-
+  @UseGuards(JwtAuthGuard)
+  async auth(@Req() req: Request): Promise<AuthResponseDto> {
+    const userId = (req.user as JwtPayload).id;
     const user = await this.userService.findOneById(userId);
+    const first = this.userService.checkFirstLogin(user.first_login_time);
 
     return {
-      ...req.user,
-      profile: user.profile || 'panchi',
-      status: 200,
+      ...user,
+      first,
     };
   }
 
   @ApiCookieAuth('token')
   @Get('/logout')
   @UseGuards(JwtAuthGuard)
-  async logout(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Next() next: NextFunction,
-  ) {
-    req.logout((err) => {
-      if (err) {
-        console.log(err);
-        return next(err);
-      }
-      res.cookie('token', '', { maxAge: 0 });
-      res.redirect(process.env.DOMAIN);
-    });
+  async logout(@Res() res: Response, @Next() next: NextFunction) {
+    res.cookie('token', '', { maxAge: 0 });
+    res.redirect(process.env.DOMAIN);
   }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, Profile } from 'passport-naver';
 import * as process from 'process';
+import { OauthDto } from '../dto/oauth.dto';
 
 @Injectable()
 export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
@@ -14,12 +15,22 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     });
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const { id, nickname, email } = profile._json;
+  async validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: Profile,
+  ): Promise<OauthDto> {
+    const { id, nickname } = profile._json;
 
     return {
-      ...profile,
+      id: id,
+      displayName: nickname,
       provider: 'naver',
     };
+
+    // return {
+    //   ...profile,
+    //   provider: 'naver',
+    // };
   }
 }

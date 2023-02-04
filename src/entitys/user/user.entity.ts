@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
@@ -12,8 +13,17 @@ export class UserEntity extends BaseEntity {
   platform: string;
 
   @ApiProperty({ description: '프로필 타입', nullable: true })
-  @Column()
+  @Transform(({ value }) => (value ? value : 'panchi'))
+  @Column({ nullable: true })
   profile: string;
+
+  @ApiProperty({ description: 'oauth 표시 이름', nullable: true })
+  @Column({ nullable: true })
+  displayName: string;
+
+  @ApiProperty({ description: '처음 로그인 시간 (datetime)' })
+  @Column()
+  first_login_time: number;
 
   constructor(partial: Partial<UserEntity>) {
     super();
