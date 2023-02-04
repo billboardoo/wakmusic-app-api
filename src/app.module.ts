@@ -23,7 +23,7 @@ import { LikeModule } from './like/like.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { QnaModule } from './qna/qna.module';
-import { rootPath } from "./utils/path.utils";
+import { rootPath } from './utils/path.utils';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { rootPath } from "./utils/path.utils";
     }),
     ServeStaticModule.forRoot({
       rootPath: join(rootPath, 'build'),
-      exclude: ['/api/(.*)'],
+      exclude: ['/api/(.*)', '/static/(.*)'],
     }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
