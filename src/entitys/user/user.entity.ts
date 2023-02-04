@@ -17,7 +17,7 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true })
   profile: string;
 
-  @ApiProperty({ description: 'oauth 표시 이름' })
+  @ApiProperty({ description: 'oauth 표시 이름', nullable: true })
   @Column({ nullable: true })
   displayName: string;
 
