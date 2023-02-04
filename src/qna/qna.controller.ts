@@ -19,7 +19,7 @@ export class QnaController {
       example: qnaCategories,
     },
   })
-  @Get('/getAllCategories')
+  @Get('/categories')
   async getAllCategories(): Promise<Array<string>> {
     return qnaCategories;
   }
