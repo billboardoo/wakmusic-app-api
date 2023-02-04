@@ -24,6 +24,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { QnaModule } from './qna/qna.module';
 import { rootPath } from './utils/path.utils';
+import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { rootPath } from './utils/path.utils';
     PlaylistModule,
     LikeModule,
     QnaModule,
+    NoticeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
