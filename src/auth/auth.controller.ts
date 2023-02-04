@@ -11,6 +11,7 @@ import {
 import {
   ApiBearerAuth,
   ApiCookieAuth,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -84,6 +85,14 @@ export class AuthController {
     res.redirect(process.env.DOMAIN);
   }
 
+  @ApiOperation({
+    summary: '유저 정보',
+    description: '유저의 정보를 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '유저 정보',
+    type: () => AuthResponseDto,
+  })
   @Get('/')
   @UseGuards(JwtAuthGuard)
   async auth(@Req() req: Request): Promise<AuthResponseDto> {
