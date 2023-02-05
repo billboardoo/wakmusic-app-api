@@ -31,10 +31,6 @@ import { NoticeModule } from './notice/notice.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(rootPath, 'build'),
-      exclude: ['/api/(.*)', '/static/(.*)'],
-    }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
     TypeOrmModule.forRoot(userDataSource),
