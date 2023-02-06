@@ -113,4 +113,11 @@ export class AuthController {
     res.cookie('token', '', { maxAge: 0 });
     res.redirect(process.env.DOMAIN);
   }
+
+  @ApiCookieAuth('token')
+  @Post('/remove')
+  @UseGuards(JwtAuthGuard)
+  async remove(@Req() req: Request): Promise<void> {
+    await this.userService.remove(req.user as JwtPayload);
+  }
 }

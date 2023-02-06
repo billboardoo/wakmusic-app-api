@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entitys/user/user.entity';
 import { Repository } from 'typeorm';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
 import { OauthDto } from '../auth/dto/oauth.dto';
 import { first } from 'rxjs';
+import { JwtPayload } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -72,5 +77,18 @@ export class UserService {
     const first_login = new Date(first_login_time);
 
     return now.toDateString() == first_login.toDateString();
+  }
+
+  async remove(user: JwtPayload): Promise<boolean> {
+    const targetUser = await this.userRepository.findOne({
+      where: {
+        id: user.id,
+      },
+    });
+    if (!targetUser) throw new NotFoundException('유저가 없습니다.');
+
+    const removedUser = await this.userRepository.remove(targetUser);
+
+    return true;
   }
 }
