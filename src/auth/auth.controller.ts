@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Next,
   Post,
@@ -11,6 +12,7 @@ import {
 import {
   ApiBearerAuth,
   ApiCookieAuth,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -114,8 +116,13 @@ export class AuthController {
     res.redirect(process.env.DOMAIN);
   }
 
+  @ApiOperation({
+    summary: '회원 탈퇴',
+    description: '회원 탈퇴 api 입니다.',
+  })
+  @ApiCreatedResponse()
   @ApiCookieAuth('token')
-  @Post('/remove')
+  @Delete('/remove')
   @UseGuards(JwtAuthGuard)
   async remove(@Req() req: Request): Promise<void> {
     await this.userService.remove(req.user as JwtPayload);
