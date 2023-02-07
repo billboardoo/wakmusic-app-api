@@ -43,7 +43,6 @@ export class UserController {
   })
   @ApiCookieAuth('token')
   @Post('/profile/set')
-  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   async setProfile(@Body() body: SetProfileBodyDto) {
     const user = await this.userService.setProfile(body);
