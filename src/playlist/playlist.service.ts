@@ -68,7 +68,10 @@ export class PlaylistService {
     });
   }
 
-  async create(body: PlaylistCreateBodyDto): Promise<PlaylistEntity> {
+  async create(
+    id: string,
+    body: PlaylistCreateBodyDto,
+  ): Promise<PlaylistEntity> {
     const limit = 20;
     let key: string;
     for (let i = 0; i <= limit; i++) {
@@ -84,7 +87,7 @@ export class PlaylistService {
 
     newPlaylist.key = key;
     newPlaylist.title = body.title;
-    newPlaylist.creator_id = body.clientId;
+    newPlaylist.creator_id = id;
     newPlaylist.image = body.image;
     newPlaylist.songlist = body.songlist;
 
@@ -124,10 +127,7 @@ export class PlaylistService {
         '개인의 플레이리스트는 추가할 수 없습니다.',
       );
 
-    const newPlaylist = await this.create({
-      ...playlist,
-      clientId: creatorId,
-    });
+    const newPlaylist = await this.create(playlist.creator_id, playlist);
     return newPlaylist;
   }
 

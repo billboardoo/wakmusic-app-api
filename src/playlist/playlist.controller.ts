@@ -32,7 +32,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
-import { AddToMyPlaylistBodyDto } from './dto/body/add-to-my-playlist.body.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -97,9 +96,10 @@ export class PlaylistController {
   @Post('/create')
   @UseGuards(JwtAuthGuard)
   async create(
+    @Req() { user }: { user: JwtPayload },
     @Body() body: PlaylistCreateBodyDto,
   ): Promise<PlaylistCreateResponseDto> {
-    const playlist = await this.playlistService.create(body);
+    const playlist = await this.playlistService.create(user.id, body);
     if (!playlist) throw new InternalServerErrorException();
 
     return {
@@ -175,13 +175,10 @@ export class PlaylistController {
   @Post('/:key/addToMyPlaylist')
   @UseGuards(JwtAuthGuard)
   async addToMyPlaylist(
+    @Req() { user }: { user: JwtPayload },
     @Param('key') key: string,
-    @Body() body: AddToMyPlaylistBodyDto,
   ): Promise<PlaylistCreateResponseDto> {
-    const playlist = await this.playlistService.addToMyPlaylist(
-      key,
-      body.creatorId,
-    );
+    const playlist = await this.playlistService.addToMyPlaylist(key, user.id);
 
     if (!playlist) throw new InternalServerErrorException();
 
