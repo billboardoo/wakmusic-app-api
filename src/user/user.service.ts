@@ -54,12 +54,12 @@ export class UserService {
     return user;
   }
 
-  async setProfile(body: SetProfileBodyDto): Promise<UserEntity> {
-    const user = await this.findOneById(body.clientId);
+  async setProfile(id: string, image: string): Promise<void> {
+    const user = await this.findOneById(id);
 
-    user.profile = body.image;
+    user.profile = image;
 
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
   }
 
   async setUsername(id: string, username: string): Promise<void> {

@@ -44,9 +44,11 @@ export class UserController {
   @ApiCookieAuth('token')
   @Post('/profile/set')
   @UseGuards(JwtAuthGuard)
-  async setProfile(@Body() body: SetProfileBodyDto) {
-    const user = await this.userService.setProfile(body);
-    if (!user) throw new NotFoundException();
+  async setProfile(
+    @Req() { user }: { user: JwtPayload },
+    @Body() body: SetProfileBodyDto,
+  ): Promise<void> {
+    await this.userService.setProfile(user.id, body.image);
   }
 
   @ApiOperation({
