@@ -50,6 +50,20 @@ export class UserController {
   }
 
   @ApiOperation({
+    summary: '닉네임 변경',
+    description: '닉네임을 변경합니다.',
+  })
+  @ApiCookieAuth('token')
+  @Post('/username')
+  @UseGuards(JwtAuthGuard)
+  async setUsername(
+    @Req() { user }: { user: JwtPayload },
+    @Body('username') username: string,
+  ): Promise<void> {
+    await this.userService.setUsername(user.id, username);
+  }
+
+  @ApiOperation({
     summary: '유저가 구독중인 플레이리스트 목록',
     description: '유저가 구독중인 플레이리스트 목록을 가져옵니다.',
   })

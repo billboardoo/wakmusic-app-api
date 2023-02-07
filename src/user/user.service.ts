@@ -18,12 +18,15 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async findOneById(id: string): Promise<UserEntity | null> {
-    return await this.userRepository.findOne({
+  async findOneById(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
       where: {
         id: id,
       },
     });
+    if (!user) throw new NotFoundException('유저를 찾을 수 없습니다.');
+
+    return user;
   }
   async findByProviderIdOrSave(OAuthUser: OauthDto): Promise<UserEntity> {
     let user = await this.userRepository.findOne({
@@ -34,10 +37,6 @@ export class UserService {
     });
 
     if (!user) user = await this.create(OAuthUser);
-
-    if (!(user.displayName == OAuthUser.displayName)) {
-      user = await this.updateUser(user, OAuthUser);
-    }
 
     return user;
   }
@@ -55,21 +54,19 @@ export class UserService {
     return user;
   }
 
-  async updateUser(user: UserEntity, OAuthData: OauthDto): Promise<UserEntity> {
-    user.displayName = OAuthData.displayName;
-
-    const updatedUser = await this.userRepository.save(user);
-    if (!updatedUser) throw new InternalServerErrorException();
-
-    return updatedUser;
-  }
-
   async setProfile(body: SetProfileBodyDto): Promise<UserEntity> {
     const user = await this.findOneById(body.clientId);
 
     user.profile = body.image;
 
     return await this.userRepository.save(user);
+  }
+
+  async setUsername(id: string, username: string): Promise<void> {
+    const user = await this.findOneById(id);
+    user.displayName = username;
+
+    await this.userRepository.save(user);
   }
 
   checkFirstLogin(first_login_time: number): boolean {
