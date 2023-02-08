@@ -21,24 +21,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.use(cookieParser());
-  app.useStaticAssets(staticPath, {
-    prefix: '/static',
-  });
-  app.useStaticAssets(staticNewsPath, {
-    prefix: '/static/news',
-  });
-  app.useStaticAssets(staticArtistPath, {
-    prefix: '/static/artist',
-  });
-  app.useStaticAssets(staticPlaylistPath, {
-    prefix: '/static/playlist',
-  });
-  app.useStaticAssets(staticPlaylistIconPath, {
-    prefix: '/static/playlist/icon',
-  });
-  app.useStaticAssets(staticProfilePath, {
-    prefix: '/static/profile',
-  });
 
   app.useGlobalPipes(
     new ValidationPipe({
