@@ -26,6 +26,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  OmitType,
 } from '@nestjs/swagger';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 
@@ -54,14 +55,34 @@ export class PlaylistController {
   })
   @ApiOkResponse({
     description: '추천 플레이리스트 목록',
-    type: () => RecommendPlaylistEntity,
+    type: () => OmitType(RecommendPlaylistEntity, ['song_ids'] as const),
     isArray: true,
   })
   @Get('/recommended')
-  async findPlaylistRecommended(): Promise<Array<RecommendPlaylistEntity>> {
-    const playlists = await this.playlistService.findPlaylistRecommended();
+  async findAllPlaylistRecommended(): Promise<
+    Array<Omit<RecommendPlaylistEntity, 'song_ids'>>
+  > {
+    const playlists = await this.playlistService.findAllPlaylistRecommended();
 
     return playlists;
+  }
+
+  @ApiOperation({
+    summary: '추천 플레이리스트 세부 정보',
+    description: '왁타버스 뮤직팀이 추천하는 플레이리스트를 가져옵니다.',
+  })
+  @ApiOkResponse({
+    description: '추천 플레이리스트',
+    type: () => RecommendPlaylistEntity,
+  })
+  @Get('/recommended/:key')
+  async findPlaylistRecommended(
+    @Param('key') key: string,
+  ): Promise<RecommendPlaylistEntity> {
+    const playlist = await this.playlistService.findPlaylistRecommended(key);
+    if (!playlist) throw new NotFoundException('플레이리스트가 없습니다.');
+
+    return playlist;
   }
 
   @ApiOperation({

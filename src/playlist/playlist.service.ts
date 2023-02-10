@@ -33,14 +33,28 @@ export class PlaylistService {
     });
   }
 
-  async findPlaylistRecommended(): Promise<Array<RecommendPlaylistEntity>> {
+  async findAllPlaylistRecommended(): Promise<
+    Array<Omit<RecommendPlaylistEntity, 'song_ids'>>
+  > {
     const playlists = await this.recommendRepository.find({
       where: {
         public: true,
       },
     });
 
-    return playlists;
+    return playlists.map((playlist) => {
+      delete playlist.song_ids;
+      return playlist;
+    });
+  }
+
+  async findPlaylistRecommended(key: string): Promise<RecommendPlaylistEntity> {
+    return await this.recommendRepository.findOne({
+      where: {
+        id: key,
+        public: true,
+      },
+    });
   }
 
   async findOneByKeyAndClientId(
