@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,10 +10,17 @@ import { Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { SongsService } from '../songs/songs.service';
+import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
+import { TotalEntity } from '../entitys/chart/total.entity';
+import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 
 @Injectable()
 export class PlaylistService {
   constructor(
+    @Inject(SongsService)
+    private readonly songsService: SongsService,
+
     @InjectRepository(PlaylistEntity, 'user')
     private readonly playlistRepository: Repository<PlaylistEntity>,
     @InjectRepository(RecommendPlaylistEntity, 'like')
@@ -33,6 +41,19 @@ export class PlaylistService {
     });
   }
 
+  async getDetail(key: string): Promise<PlaylistGetDetailResponseDto> {
+    const playlist = await this.findOne(key);
+    if (!playlist) return null;
+
+    const songs = await this.songsService.findByIds(playlist.songlist);
+    delete playlist.songlist;
+
+    return {
+      ...playlist,
+      songs: songs,
+    };
+  }
+
   async findAllPlaylistRecommended(): Promise<
     Array<Omit<RecommendPlaylistEntity, 'song_ids'>>
   > {
@@ -48,13 +69,22 @@ export class PlaylistService {
     });
   }
 
-  async findPlaylistRecommended(key: string): Promise<RecommendPlaylistEntity> {
-    return await this.recommendRepository.findOne({
+  async findPlaylistRecommended(
+    key: string,
+  ): Promise<FindPlaylistRecommendedResponseDto> {
+    const playlist = await this.recommendRepository.findOne({
       where: {
         id: key,
         public: true,
       },
     });
+
+    return {
+      id: playlist.id,
+      title: playlist.title,
+      songs: await this.songsService.findByIds(playlist.song_ids),
+      public: playlist.public,
+    };
   }
 
   async findOneByKeyAndClientId(

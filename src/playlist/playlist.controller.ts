@@ -29,6 +29,8 @@ import {
   OmitType,
 } from '@nestjs/swagger';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
+import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
+import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -73,12 +75,12 @@ export class PlaylistController {
   })
   @ApiOkResponse({
     description: '추천 플레이리스트',
-    type: () => RecommendPlaylistEntity,
+    type: () => FindPlaylistRecommendedResponseDto,
   })
   @Get('/recommended/:key')
   async findPlaylistRecommended(
     @Param('key') key: string,
-  ): Promise<RecommendPlaylistEntity> {
+  ): Promise<FindPlaylistRecommendedResponseDto> {
     const playlist = await this.playlistService.findPlaylistRecommended(key);
     if (!playlist) throw new NotFoundException('플레이리스트가 없습니다.');
 
@@ -130,11 +132,13 @@ export class PlaylistController {
   })
   @ApiOkResponse({
     description: '플레이리스트 세부정보',
-    type: () => PlaylistEntity,
+    type: () => PlaylistGetDetailResponseDto,
   })
   @Get('/:key/detail')
-  async getDetail(@Param('key') key: string): Promise<PlaylistEntity> {
-    const playlist = await this.playlistService.findOne(key);
+  async getDetail(
+    @Param('key') key: string,
+  ): Promise<PlaylistGetDetailResponseDto> {
+    const playlist = await this.playlistService.getDetail(key);
     if (!playlist) throw new NotFoundException();
 
     return playlist;

@@ -22,6 +22,21 @@ export class SongsService {
     private readonly totalRepository: Repository<TotalEntity>,
   ) {}
 
+  async findOne(id: string): Promise<TotalEntity> {
+    return await this.totalRepository.findOne({ where: { id: id } });
+  }
+
+  async findByIds(ids: Array<string>): Promise<Array<TotalEntity>> {
+    const songs: Array<TotalEntity> = [];
+
+    for (const id of ids) {
+      const song = await this.findOne(id);
+      songs.push(song);
+    }
+
+    return songs;
+  }
+
   async findNewSongs(artist?: string, limit = 10): Promise<Array<TotalEntity>> {
     return await this.totalRepository.find({
       where: {
