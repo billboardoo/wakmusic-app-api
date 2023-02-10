@@ -6,9 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entitys/user/user.entity';
 import { Repository } from 'typeorm';
-import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
 import { OauthDto } from '../auth/dto/oauth.dto';
-import { first } from 'rxjs';
 import { JwtPayload } from '../auth/auth.service';
 
 @Injectable()
@@ -84,7 +82,7 @@ export class UserService {
     });
     if (!targetUser) throw new NotFoundException('유저가 없습니다.');
 
-    const removedUser = await this.userRepository.remove(targetUser);
+    await this.userRepository.remove(targetUser);
 
     return true;
   }

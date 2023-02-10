@@ -6,11 +6,9 @@ import {
   Post,
   Req,
   Res,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -26,7 +24,6 @@ import { AppleAuthGuard } from './guard/apple-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { AuthResponseDto } from './dto/response/auth.response.dto';
 import { OauthDto } from './dto/oauth.dto';
-import { UserEntity } from '../entitys/user/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')

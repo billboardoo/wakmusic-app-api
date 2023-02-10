@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { ChartsService } from './charts.service';
-import { UpdatedEntity } from '../entitys/chart/updated.entity';
 import { FindChartsQueryDto } from './dto/query/find-charts.query.dto';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 

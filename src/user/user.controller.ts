@@ -3,8 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  HttpCode,
-  NotFoundException,
   Post,
   Req,
   UseGuards,
@@ -13,9 +11,7 @@ import {
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
-import { UserEntity } from '../entitys/user/user.entity';
 import {
-  ApiBearerAuth,
   ApiCookieAuth,
   ApiOkResponse,
   ApiOperation,

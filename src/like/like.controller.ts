@@ -14,7 +14,6 @@ import { LikeEntity } from '../entitys/like/like.entity';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
 import {
-  ApiBearerAuth,
   ApiCookieAuth,
   ApiOkResponse,
   ApiOperation,

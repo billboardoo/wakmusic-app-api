@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MainArtistsEntity } from '../entitys/main/artists.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { FindQueryDto } from './dto/query/find.query.dto';
 import { ArtistsEntity } from '../entitys/chart/artists.entity';
 import { TotalEntity } from '../entitys/chart/total.entity';

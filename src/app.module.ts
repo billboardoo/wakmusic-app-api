@@ -20,10 +20,7 @@ import { UserModule } from './user/user.module';
 import { RedirectModule } from './redirect/redirect.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { LikeModule } from './like/like.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
 import { QnaModule } from './qna/qna.module';
-import { rootPath } from './utils/path.utils';
 import { NoticeModule } from './notice/notice.module';
 
 @Module({

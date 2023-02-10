@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
+import { Profile, Strategy } from 'passport-google-oauth20';
 import * as process from 'process';
 import { OauthDto } from '../dto/oauth.dto';
 
@@ -28,10 +28,5 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       displayName: displayName,
       provider: 'google',
     };
-
-    // return {
-    //   ...profile,
-    //   provider: 'google',
-    // };
   }
 }

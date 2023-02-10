@@ -1,17 +1,4 @@
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Exclude } from 'class-transformer';
-import { MonthlyEntity } from './monthly.entity';
-import { DailyEntity } from './daily.entity';
-import { WeeklyEntity } from './weekly.entity';
-import { HourlyEntity } from './hourly.entity';
+import { BaseEntity, Column, Entity, PrimaryColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'total' })

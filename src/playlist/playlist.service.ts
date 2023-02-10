@@ -1,19 +1,14 @@
 import {
   BadRequestException,
-  Inject,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
-import { UserEntity } from '../entitys/user/user.entity';
-import { UserService } from '../user/user.service';
-// import { cryptoRandomStringAsync } from 'crypto-random-string';
 
 @Injectable()
 export class PlaylistService {

@@ -1,14 +1,13 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { moment } from '../utils/moment.utils';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindSongsQueryDto } from './dto/query/find-songs.query.dto';
 import * as fs from 'fs';
-import { lyricsPath, rootPath } from '../utils/path.utils';
+import { lyricsPath } from '../utils/path.utils';
 import { FindSongsByLyricsResponseDto } from './dto/response/find-songs-by-lyrics.response.dto';
 import { CheckLyricsQueryDto } from './dto/query/check-lyrics.query.dto';
-import { CheckLyricsResponseDto } from './dto/response/check-lyrics.response.dto';
 import { FindSongsByPeriodQueryDto } from './dto/query/find-songs-by-period.query.dto';
 import { ArtistService } from '../artist/artist.service';
 import * as vttParser from 'node-webvtt';
