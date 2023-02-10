@@ -27,10 +27,5 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
       displayName: nickname,
       provider: 'naver',
     };
-
-    // return {
-    //   ...profile,
-    //   provider: 'naver',
-    // };
   }
 }

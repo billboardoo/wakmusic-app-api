@@ -5,13 +5,9 @@ import { GoogleStrategy } from './strategy/google.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import * as process from 'process';
 import { UserModule } from '../user/user.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../entitys/user/user.entity';
-import { UserService } from '../user/user.service';
 import { AppleStrategy } from './strategy/apple.strategy';
 import { NaverStrategy } from './strategy/naver.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { SessionSerializer } from './session.serializer';
 import { PassportModule } from '@nestjs/passport';
 
 @Module({
@@ -29,7 +25,6 @@ import { PassportModule } from '@nestjs/passport';
     AppleStrategy,
     NaverStrategy,
     JwtStrategy,
-    SessionSerializer,
   ],
 })
 export class AuthModule {}

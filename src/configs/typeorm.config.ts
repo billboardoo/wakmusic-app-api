@@ -1,5 +1,4 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { main, chart } from '../../typeorm.config.json';
 import { ArtistsEntity } from '../entitys/chart/artists.entity';
 import { MainArtistsEntity } from '../entitys/main/artists.entity';
 import { UpdatedEntity } from '../entitys/chart/updated.entity';
@@ -29,7 +28,6 @@ export const mainDataSource: TypeOrmModuleOptions = {
     QnaEntity,
     NoticeEntity,
   ],
-  // synchronize: true,
 };
 
 export const chartDataSource: TypeOrmModuleOptions = {
@@ -45,7 +43,6 @@ export const chartDataSource: TypeOrmModuleOptions = {
     DailyEntity,
     HourlyEntity,
   ],
-  // synchronize: true,
 };
 
 export const userDataSource: TypeOrmModuleOptions = {

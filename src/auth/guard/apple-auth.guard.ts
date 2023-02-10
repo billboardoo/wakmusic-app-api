@@ -5,9 +5,6 @@ import { AuthGuard } from '@nestjs/passport';
 export class AppleAuthGuard extends AuthGuard('apple') {
   async canActivate(context: ExecutionContext) {
     const result = (await super.canActivate(context)) as boolean;
-    const request = context.switchToHttp().getRequest();
-
-    // await super.logIn(request);
     return result;
   }
 }

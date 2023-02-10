@@ -1,6 +1,5 @@
 import {
   Body,
-  ClassSerializerInterceptor,
   Controller,
   Get,
   InternalServerErrorException,
@@ -8,7 +7,6 @@ import {
   Param,
   Post,
   UseGuards,
-  UseInterceptors,
   Req,
   BadRequestException,
   Patch,
@@ -19,12 +17,10 @@ import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
 import { PlaylistCreateResponseDto } from './dto/response/playlist-create.response.dto';
-import { PlaylistDetailResponseDto } from './dto/response/playlist-detail.response.dto';
 import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
 import {
-  ApiBearerAuth,
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,

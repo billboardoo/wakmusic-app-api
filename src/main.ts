@@ -1,19 +1,8 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
-import * as passport from 'passport';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import {
-  staticArtistPath,
-  staticNewsPath,
-  staticPath,
-  staticPlaylistIconPath,
-  staticPlaylistPath,
-  staticProfilePath,
-} from './utils/path.utils';
 import { setupSwagger } from './utils/swagger.utils';
 import * as process from 'process';
 

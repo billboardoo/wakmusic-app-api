@@ -2,8 +2,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Param,
-  Post,
   Query,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,9 +9,6 @@ import { AppService, ChartsType } from './app.service';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NewsEntity } from './entitys/main/news.entity';
 import { TeamsEntity } from './entitys/main/teams.entity';
-import { ArtistsEntity } from './entitys/chart/artists.entity';
-import { TotalEntity } from './entitys/chart/total.entity';
-import { UpdatedEntity } from './entitys/chart/updated.entity';
 
 @ApiTags('main')
 @Controller()
