@@ -5,6 +5,7 @@ import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { setupSwagger } from './utils/swagger.utils';
 import * as process from 'process';
+import { setupPm2 } from './utils/pm2.utils';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -25,15 +26,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   setupSwagger(app);
-
-  let isDisableKeepAlive = false;
-
-  app.use(function (req, res, next) {
-    if (isDisableKeepAlive) {
-      res.set('Connection', 'close');
-    }
-    next();
-  });
+  setupPm2(app);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -43,12 +36,6 @@ async function bootstrap() {
     process.send('ready');
 
     console.log(`application is listening on port ${process.env.PORT}`);
-  });
-
-  process.on('SIGINT', function () {
-    isDisableKeepAlive = true;
-    app.close();
-    console.log('server closed');
   });
 }
 bootstrap();
