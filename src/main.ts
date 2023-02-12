@@ -10,6 +10,8 @@ import { setupPm2 } from './utils/pm2.utils';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.enableCors();
+
   app.use(cookieParser());
 
   app.useGlobalPipes(
