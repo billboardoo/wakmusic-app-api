@@ -28,11 +28,8 @@ export class AppleStrategy extends PassportStrategy(Strategy, 'apple') {
     const decodedObj = this.jwtService.decode(idToken);
     if (!decodedObj.sub) throw new UnauthorizedException();
 
-    const { firstName, lastName } = profile;
-
     return {
       id: decodedObj.sub,
-      displayName: `${firstName} ${lastName}`,
       provider: 'apple',
     };
   }

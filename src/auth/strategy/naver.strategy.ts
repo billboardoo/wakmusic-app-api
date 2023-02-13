@@ -20,11 +20,10 @@ export class NaverStrategy extends PassportStrategy(Strategy, 'naver') {
     refreshToken: string,
     profile: Profile,
   ): Promise<OauthDto> {
-    const { id, nickname } = profile._json;
+    const { id } = profile._json;
 
     return {
       id: id,
-      displayName: nickname,
       provider: 'naver',
     };
   }

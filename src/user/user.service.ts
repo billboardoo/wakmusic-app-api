@@ -8,6 +8,7 @@ import { UserEntity } from '../entitys/user/user.entity';
 import { Repository } from 'typeorm';
 import { OauthDto } from '../auth/dto/oauth.dto';
 import { JwtPayload } from '../auth/auth.service';
+import * as process from 'process';
 
 @Injectable()
 export class UserService {
@@ -42,6 +43,7 @@ export class UserService {
   async create(OAuthUser: OauthDto): Promise<UserEntity> {
     const newUser = this.userRepository.create();
     newUser.id = OAuthUser.id;
+    newUser.displayName = process.env.DEFAULT_NAME;
     newUser.platform = OAuthUser.provider;
     newUser.profile = 'panchi';
     newUser.first_login_time = Date.now();

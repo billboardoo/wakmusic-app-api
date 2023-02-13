@@ -21,11 +21,10 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     refreshToken: string,
     profile: Profile,
   ): OauthDto {
-    const { id, displayName } = profile;
+    const { id } = profile;
 
     return {
       id: id,
-      displayName: displayName,
       provider: 'google',
     };
   }
