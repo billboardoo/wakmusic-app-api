@@ -23,6 +23,7 @@ import { LikeModule } from './like/like.module';
 import { QnaModule } from './qna/qna.module';
 import { NoticeModule } from './notice/notice.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
     LikeModule,
     QnaModule,
     NoticeModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

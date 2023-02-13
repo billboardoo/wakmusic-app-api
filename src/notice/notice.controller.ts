@@ -2,10 +2,14 @@ import { Controller, Get } from '@nestjs/common';
 import { NoticeService } from './notice.service';
 import { NoticeEntity } from '../entitys/main/notice.entity';
 import { noticeCategories } from './data/notice.data';
+import { CategoriesService } from '../categories/categories.service';
 
 @Controller('notice')
 export class NoticeController {
-  constructor(private readonly noticeService: NoticeService) {}
+  constructor(
+    private readonly noticeService: NoticeService,
+    private readonly categoriesService: CategoriesService,
+  ) {}
 
   @Get()
   async findAll(): Promise<Array<NoticeEntity>> {
@@ -19,6 +23,9 @@ export class NoticeController {
 
   @Get('/categories')
   async getAllCategories(): Promise<Array<string>> {
-    return noticeCategories;
+    const categories = await this.categoriesService.findCategoriesByType(
+      'notice',
+    );
+    return categories;
   }
 }

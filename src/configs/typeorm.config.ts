@@ -17,6 +17,7 @@ import { LikeManagerEntity } from '../entitys/like/manager.entity';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { QnaEntity } from '../entitys/main/qna.entity';
 import { NoticeEntity } from '../entitys/main/notice.entity';
+import { CategoriesEntity } from '../entitys/main/categories.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -27,6 +28,7 @@ export const mainDataSource: TypeOrmModuleOptions = {
     MainArtistsEntity,
     QnaEntity,
     NoticeEntity,
+    CategoriesEntity,
   ],
 };
 
