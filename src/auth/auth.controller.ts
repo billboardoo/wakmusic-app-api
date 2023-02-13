@@ -49,7 +49,7 @@ export class AuthController {
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
-    res.redirect(process.env.DOMAIN);
+    res.redirect(process.env.DOMAIN_MYPAGE);
   }
 
   @Get('/login/apple')
@@ -65,7 +65,7 @@ export class AuthController {
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
-    res.redirect(process.env.DOMAIN);
+    res.redirect(process.env.DOMAIN_MYPAGE);
   }
 
   @Get('/login/naver')
@@ -81,7 +81,7 @@ export class AuthController {
 
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
-    res.redirect(process.env.DOMAIN);
+    res.redirect(process.env.DOMAIN_MYPAGE);
   }
 
   @ApiOperation({
