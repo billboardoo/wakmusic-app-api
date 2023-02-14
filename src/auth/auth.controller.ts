@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -24,6 +25,8 @@ import { AppleAuthGuard } from './guard/apple-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 import { AuthResponseDto } from './dto/response/auth.response.dto';
 import { OauthDto } from './dto/oauth.dto';
+import { LoginMobileBodyDto } from './dto/body/login-mobile.body.dto';
+import { LoginMobileResponseDto } from './dto/response/login-mobile.response.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -82,6 +85,28 @@ export class AuthController {
     res.cookie('token', accessToken, { maxAge: 1000 * 60 * 60 * 24 * 7 });
 
     res.redirect(process.env.DOMAIN_MYPAGE);
+  }
+
+  @ApiOperation({
+    summary: '모바일 로그인',
+    description: '모바일 로그인 엔드포인트 입니다.',
+  })
+  @ApiCreatedResponse({
+    description: '토큰',
+    type: () => LoginMobileResponseDto,
+  })
+  @Post('/login/mobile')
+  async loginMobile(
+    @Body() body: LoginMobileBodyDto,
+  ): Promise<LoginMobileResponseDto> {
+    const { accessToken } = await this.authService.login({
+      id: body.id,
+      provider: body.provider,
+    });
+
+    return {
+      token: accessToken,
+    };
   }
 
   @ApiOperation({
