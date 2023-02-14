@@ -1,11 +1,5 @@
-import {
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
-import { AppService, ChartsType } from './app.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { AppService } from './app.service';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NewsEntity } from './entitys/main/news.entity';
 import { TeamsEntity } from './entitys/main/teams.entity';
@@ -24,7 +18,6 @@ export class AppController {
     type: () => NewsEntity,
     isArray: true,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/news')
   async findNews(@Query('start') start?: number): Promise<Array<NewsEntity>> {
     return await this.appService.findNews(start);
@@ -38,7 +31,6 @@ export class AppController {
     description: '팀원 목록입니다.',
     type: () => TeamsEntity,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/teams')
   async findAllTeams(): Promise<Array<TeamsEntity>> {
     return await this.appService.findAllTeams();

@@ -1,5 +1,4 @@
 import {
-  ClassSerializerInterceptor,
   Controller,
   Get,
   NotFoundException,
@@ -7,7 +6,6 @@ import {
   Post,
   Req,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { LikeEntity } from '../entitys/like/like.entity';
@@ -29,7 +27,6 @@ export class LikeController {
   @ApiOkResponse({ description: '좋아요 entity', type: () => LikeEntity })
   @ApiCookieAuth('token')
   @Get('/:songId')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async fineOne(@Param('songId') songId: string): Promise<LikeEntity> {
     const like = await this.likeService.findOne(songId);
@@ -45,7 +42,6 @@ export class LikeController {
   })
   @ApiCookieAuth('token')
   @Post('/:songId/addLike')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async addLike(
     @Req() req,
@@ -67,7 +63,6 @@ export class LikeController {
   })
   @ApiCookieAuth('token')
   @Post('/:songId/removeLike')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async removeLike(
     @Req() req,

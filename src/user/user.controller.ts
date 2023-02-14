@@ -1,13 +1,4 @@
-import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Post,
-  Req,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
@@ -72,7 +63,6 @@ export class UserController {
   })
   @ApiCookieAuth('token')
   @Get('/playlists')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async getPlaylists(@Req() req: Request): Promise<Array<PlaylistEntity>> {
     const playlists = await this.playlistService.findByClientId(
@@ -92,7 +82,6 @@ export class UserController {
   })
   @ApiCookieAuth('token')
   @Get('/likes')
-  @UseInterceptors(ClassSerializerInterceptor)
   @UseGuards(JwtAuthGuard)
   async getLikes(@Req() req): Promise<Array<LikeEntity>> {
     const likes = await this.likeService.findByUserId((req as JwtPayload).id);

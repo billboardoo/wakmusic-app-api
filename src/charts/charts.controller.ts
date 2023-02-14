@@ -1,10 +1,4 @@
-import {
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Query,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { ChartsService } from './charts.service';
 import { FindChartsQueryDto } from './dto/query/find-charts.query.dto';
@@ -24,7 +18,6 @@ export class ChartsController {
     type: () => TotalEntity,
     isArray: true,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/')
   async findCharts(
     @Query() query: FindChartsQueryDto,
@@ -41,7 +34,6 @@ export class ChartsController {
     description: '차트 업데이트 시각',
     type: Number,
   })
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get('/updated')
   async findUpdated(): Promise<number> {
     return await this.chartsService.findUpdated();
