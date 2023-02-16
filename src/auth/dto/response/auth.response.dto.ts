@@ -12,6 +12,10 @@ export class AuthResponseDto {
 
   @ApiProperty()
   @IsString()
+  profile: string;
+
+  @ApiProperty()
+  @IsString()
   displayName: string;
 
   @ApiProperty()
