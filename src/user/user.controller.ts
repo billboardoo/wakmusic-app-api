@@ -9,22 +9,14 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { PlaylistService } from '../playlist/playlist.service';
-import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { JwtPayload } from '../auth/auth.service';
-import { LikeEntity } from '../entitys/like/like.entity';
-import { LikeService } from '../like/like.service';
 import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
 import { LikeDto } from '../like/dto/like.dto';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly playlistService: PlaylistService,
-    private readonly likeService: LikeService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOperation({
     summary: '프로필 설정',

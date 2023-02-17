@@ -4,8 +4,6 @@ import { NewsEntity } from './entitys/main/news.entity';
 import { Repository } from 'typeorm';
 import { TeamsEntity } from './entitys/main/teams.entity';
 
-export type ChartsType = 'monthly' | 'weekly' | 'daily' | 'hourly';
-
 @Injectable()
 export class AppService {
   constructor(
