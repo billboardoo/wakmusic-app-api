@@ -1,7 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { NoticeService } from './notice.service';
 import { NoticeEntity } from '../entitys/main/notice.entity';
-import { noticeCategories } from './data/notice.data';
 import { CategoriesService } from '../categories/categories.service';
 
 @Controller('notice')

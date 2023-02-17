@@ -1,6 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
 import { QnaService } from './qna.service';
-import { qnaCategories } from './data/qna.data';
 import { QnaEntity } from '../entitys/main/qna.entity';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from '../categories/categories.service';
@@ -19,9 +18,8 @@ export class QnaController {
   })
   @ApiOkResponse({
     description: '카테고리들',
-    schema: {
-      example: qnaCategories,
-    },
+    type: 'string',
+    isArray: true,
   })
   @Get('/categories')
   async getAllCategories(): Promise<Array<string>> {
