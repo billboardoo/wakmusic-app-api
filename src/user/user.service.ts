@@ -9,10 +9,19 @@ import { Repository } from 'typeorm';
 import { OauthDto } from '../auth/dto/oauth.dto';
 import { JwtPayload } from '../auth/auth.service';
 import * as process from 'process';
+import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
+import { PlaylistService } from '../playlist/playlist.service';
+import { SongsService } from '../songs/songs.service';
+import { LikeDto } from '../like/dto/like.dto';
+import { LikeService } from '../like/like.service';
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly playlistService: PlaylistService,
+    private readonly likeService: LikeService,
+    private readonly songsService: SongsService,
+
     @InjectRepository(UserEntity, 'user')
     private readonly userRepository: Repository<UserEntity>,
   ) {}
@@ -87,5 +96,35 @@ export class UserService {
     await this.userRepository.remove(targetUser);
 
     return true;
+  }
+
+  async getUserPlaylists(
+    id: string,
+  ): Promise<Array<PlaylistGetDetailResponseDto>> {
+    const playlists = await this.playlistService.findByClientId(id);
+    const results: Array<PlaylistGetDetailResponseDto> = [];
+
+    for (const playlist of playlists) {
+      const song_ids = playlist.songlist;
+      delete playlist.songlist;
+
+      results.push({
+        ...playlist,
+        songs: await this.songsService.findByIds(song_ids),
+      });
+    }
+
+    return results;
+  }
+
+  async getUserLikes(id: string): Promise<Array<LikeDto>> {
+    const likes = await this.likeService.findByUserId(id);
+    const results: Array<LikeDto> = [];
+
+    for (const like of likes) {
+      results.push(await this.likeService.getLike(id));
+    }
+
+    return results;
   }
 }

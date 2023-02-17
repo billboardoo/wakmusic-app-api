@@ -9,11 +9,14 @@ import { LikeEntity } from '../entitys/like/like.entity';
 import { Repository } from 'typeorm';
 import { LikeManagerEntity } from '../entitys/like/manager.entity';
 import { ChartsService } from '../charts/charts.service';
+import { LikeDto } from './dto/like.dto';
+import { SongsService } from '../songs/songs.service';
 
 @Injectable()
 export class LikeService {
   constructor(
     private readonly chartsService: ChartsService,
+    private readonly songsService: SongsService,
 
     @InjectRepository(LikeEntity, 'like')
     private readonly likeRepository: Repository<LikeEntity>,
@@ -21,7 +24,7 @@ export class LikeService {
     private readonly likeManagerRepository: Repository<LikeManagerEntity>,
   ) {}
 
-  async findOne(songId: string) {
+  async findOne(songId: string): Promise<LikeEntity> {
     const isSongIdExist = await this.chartsService.findOne(songId);
     if (!isSongIdExist) throw new NotFoundException('song not found');
 
@@ -46,6 +49,17 @@ export class LikeService {
     const like = this.likeRepository.create();
     like.song_id = songId;
     return this.likeRepository.save(like);
+  }
+
+  async getLike(songId: string): Promise<LikeDto> {
+    const like = await this.findOne(songId);
+    const song_detail = await this.songsService.findOne(songId);
+
+    return {
+      id: like.id,
+      song: song_detail,
+      likes: like.likes,
+    };
   }
 
   async addLike(songId: string, userId: string): Promise<LikeEntity> {

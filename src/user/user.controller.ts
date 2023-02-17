@@ -14,6 +14,8 @@ import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { JwtPayload } from '../auth/auth.service';
 import { LikeEntity } from '../entitys/like/like.entity';
 import { LikeService } from '../like/like.service';
+import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
+import { LikeDto } from '../like/dto/like.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -58,14 +60,16 @@ export class UserController {
   })
   @ApiOkResponse({
     description: '플레이리스트 목록',
-    type: () => PlaylistEntity,
+    type: () => PlaylistGetDetailResponseDto,
     isArray: true,
   })
   @ApiCookieAuth('token')
   @Get('/playlists')
   @UseGuards(JwtAuthGuard)
-  async getPlaylists(@Req() req: Request): Promise<Array<PlaylistEntity>> {
-    const playlists = await this.playlistService.findByClientId(
+  async getUserPlaylists(
+    @Req() req: Request,
+  ): Promise<Array<PlaylistGetDetailResponseDto>> {
+    const playlists = await this.userService.getUserPlaylists(
       (req.user as JwtPayload).id,
     );
     return playlists;
@@ -77,14 +81,15 @@ export class UserController {
   })
   @ApiOkResponse({
     description: '노래 목록',
-    type: () => LikeEntity,
+    type: () => LikeDto,
     isArray: true,
   })
   @ApiCookieAuth('token')
   @Get('/likes')
   @UseGuards(JwtAuthGuard)
-  async getLikes(@Req() req): Promise<Array<LikeEntity>> {
-    const likes = await this.likeService.findByUserId((req as JwtPayload).id);
+  async getUserLikes(@Req() req): Promise<Array<LikeDto>> {
+    const likes = await this.userService.getUserLikes((req as JwtPayload).id);
+
     return likes;
   }
 }

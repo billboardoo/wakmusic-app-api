@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -17,6 +18,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { LikeDto } from './dto/like.dto';
 
 @ApiTags('like')
 @Controller('like')
@@ -24,13 +26,12 @@ export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
   @ApiOperation({ summary: '좋아요 수', description: '좋아요를 가져옵니다.' })
-  @ApiOkResponse({ description: '좋아요 entity', type: () => LikeEntity })
+  @ApiOkResponse({ description: '좋아요 entity', type: () => LikeDto })
   @ApiCookieAuth('token')
   @Get('/:songId')
   @UseGuards(JwtAuthGuard)
-  async fineOne(@Param('songId') songId: string): Promise<LikeEntity> {
-    const like = await this.likeService.findOne(songId);
-    if (!like) throw new NotFoundException();
+  async getLike(@Param('songId') songId: string): Promise<LikeDto> {
+    const like = await this.likeService.getLike(songId);
 
     return like;
   }
