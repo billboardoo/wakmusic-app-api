@@ -133,16 +133,17 @@ export class PlaylistService {
     return await this.playlistRepository.save(newPlaylist);
   }
 
-  async edit(key: string, body: PlaylistEditBodyDto): Promise<PlaylistEntity> {
-    const currentPlaylist = await this.findOneByKeyAndClientId(
-      key,
-      body.clientId,
-    );
+  async edit(
+    id: string,
+    key: string,
+    body: PlaylistEditBodyDto,
+  ): Promise<PlaylistEntity> {
+    const currentPlaylist = await this.findOneByKeyAndClientId(key, id);
     if (!currentPlaylist)
       throw new NotFoundException('플레이리스트가 없습니다.');
 
     currentPlaylist.title = body.title;
-    currentPlaylist.songlist = body.songlist;
+    currentPlaylist.songlist = body.songs;
 
     return await this.playlistRepository.save(currentPlaylist);
   }

@@ -163,10 +163,11 @@ export class PlaylistController {
     @Param('key') key: string,
     @Body() body: PlaylistEditBodyDto,
   ): Promise<SuccessDto> {
-    if ((req.user as JwtPayload).id !== body.clientId)
-      throw new BadRequestException('개인의 플레이리스트만 수정가능합니다.');
-
-    const playlist = await this.playlistService.edit(key, body);
+    const playlist = await this.playlistService.edit(
+      (req.user as JwtPayload).id,
+      key,
+      body,
+    );
 
     if (!playlist) throw new InternalServerErrorException();
 
