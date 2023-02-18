@@ -14,11 +14,28 @@ import { JwtPayload } from '../auth/auth.service';
 import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
 import { LikeDto } from '../like/dto/like.dto';
 import { SuccessDto } from '../dto/success.dto';
+import { CategoriesService } from '../categories/categories.service';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly categoriesService: CategoriesService,
+  ) {}
+
+  @ApiOperation({
+    summary: '프로필 목록',
+    description: '가능한 프로필 사진 목록을 가져옵니다.',
+  })
+  @ApiOkResponse({
+    type: 'string',
+    isArray: true,
+  })
+  @Get('/profile/list')
+  async getProfileImages(): Promise<Array<string>> {
+    return await this.categoriesService.findCategoriesByType('profile');
+  }
 
   @ApiOperation({
     summary: '프로필 설정',

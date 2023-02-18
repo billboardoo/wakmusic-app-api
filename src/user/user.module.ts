@@ -6,6 +6,7 @@ import { UserEntity } from '../entitys/user/user.entity';
 import { PlaylistModule } from '../playlist/playlist.module';
 import { LikeModule } from '../like/like.module';
 import { SongsModule } from '../songs/songs.module';
+import { CategoriesModule } from '../categories/categories.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SongsModule } from '../songs/songs.module';
     PlaylistModule,
     LikeModule,
     SongsModule,
+    CategoriesModule,
   ],
   providers: [UserService],
   controllers: [UserController],
