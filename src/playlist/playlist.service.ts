@@ -128,7 +128,7 @@ export class PlaylistService {
     newPlaylist.title = body.title;
     newPlaylist.creator_id = id;
     newPlaylist.image = body.image;
-    newPlaylist.songlist = body.songlist;
+    newPlaylist.songlist = [];
 
     return await this.playlistRepository.save(newPlaylist);
   }

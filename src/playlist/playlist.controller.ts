@@ -120,7 +120,10 @@ export class PlaylistController {
     @Body() body: PlaylistCreateBodyDto,
   ): Promise<PlaylistCreateResponseDto> {
     const playlist = await this.playlistService.create(user.id, body);
-    if (!playlist) throw new InternalServerErrorException();
+    if (!playlist)
+      throw new InternalServerErrorException(
+        '플레이리스트를 생성하는데 실패하였습니다.',
+      );
 
     return {
       key: playlist.key,

@@ -9,8 +9,4 @@ export class PlaylistCreateBodyDto {
   @ApiProperty({ description: '플레이리스트 이미지 타입' })
   @IsString()
   image: string;
-
-  @ApiProperty({ description: '플레이리스트 노래 목록' })
-  @IsArray()
-  songlist: Array<string>;
 }
