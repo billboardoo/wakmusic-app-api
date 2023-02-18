@@ -31,6 +31,7 @@ import {
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
+import { SuccessDto } from '../dto/success.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -148,7 +149,9 @@ export class PlaylistController {
     summary: '플레이리스트 수정',
     description: '플레이리스트를 수정합니다.',
   })
-  @ApiCreatedResponse()
+  @ApiOkResponse({
+    type: () => SuccessDto,
+  })
   @ApiCookieAuth('token')
   @Patch('/:key/edit')
   @UseGuards(JwtAuthGuard)
@@ -156,32 +159,42 @@ export class PlaylistController {
     @Req() req: Request,
     @Param('key') key: string,
     @Body() body: PlaylistEditBodyDto,
-  ): Promise<void> {
+  ): Promise<SuccessDto> {
     if ((req.user as JwtPayload).id !== body.clientId)
       throw new BadRequestException('개인의 플레이리스트만 수정가능합니다.');
 
     const playlist = await this.playlistService.edit(key, body);
 
     if (!playlist) throw new InternalServerErrorException();
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({
     summary: '플레이리스트 삭제',
     description: '플레이리스트를 삭제합니다',
   })
-  @ApiCreatedResponse()
+  @ApiOkResponse({
+    type: () => SuccessDto,
+  })
   @ApiCookieAuth('token')
   @Delete('/:key/delete')
   @UseGuards(JwtAuthGuard)
   async deletePlaylist(
     @Req() req: Request,
     @Param('key') key: string,
-  ): Promise<void> {
+  ): Promise<SuccessDto> {
     const playlist = await this.playlistService.delete(
       key,
       (req.user as JwtPayload).id,
     );
     if (!playlist) throw new InternalServerErrorException();
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({

@@ -27,6 +27,7 @@ import { AuthResponseDto } from './dto/response/auth.response.dto';
 import { OauthDto } from './dto/oauth.dto';
 import { LoginMobileBodyDto } from './dto/body/login-mobile.body.dto';
 import { LoginMobileResponseDto } from './dto/response/login-mobile.response.dto';
+import { SuccessDto } from '../dto/success.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -142,11 +143,17 @@ export class AuthController {
     summary: '회원 탈퇴',
     description: '회원 탈퇴 api 입니다.',
   })
-  @ApiCreatedResponse()
+  @ApiOkResponse({
+    type: () => SuccessDto,
+  })
   @ApiCookieAuth('token')
   @Delete('/remove')
   @UseGuards(JwtAuthGuard)
-  async remove(@Req() req: Request): Promise<void> {
+  async remove(@Req() req: Request): Promise<SuccessDto> {
     await this.userService.remove(req.user as JwtPayload);
+
+    return {
+      status: 200,
+    };
   }
 }

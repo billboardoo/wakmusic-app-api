@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
 import {
   ApiCookieAuth,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -12,6 +13,7 @@ import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
 import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
 import { LikeDto } from '../like/dto/like.dto';
+import { SuccessDto } from '../dto/success.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -22,19 +24,29 @@ export class UserController {
     summary: '프로필 설정',
     description: '프로필을 설정합니다.',
   })
+  @ApiCreatedResponse({
+    type: () => SuccessDto,
+  })
   @ApiCookieAuth('token')
   @Post('/profile/set')
   @UseGuards(JwtAuthGuard)
   async setProfile(
     @Req() { user }: { user: JwtPayload },
     @Body() body: SetProfileBodyDto,
-  ): Promise<void> {
+  ): Promise<SuccessDto> {
     await this.userService.setProfile(user.id, body.image);
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({
     summary: '닉네임 변경',
     description: '닉네임을 변경합니다.',
+  })
+  @ApiCreatedResponse({
+    type: () => SuccessDto,
   })
   @ApiCookieAuth('token')
   @Post('/username')
@@ -42,8 +54,12 @@ export class UserController {
   async setUsername(
     @Req() { user }: { user: JwtPayload },
     @Body('username') username: string,
-  ): Promise<void> {
+  ): Promise<SuccessDto> {
     await this.userService.setUsername(user.id, username);
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({

@@ -8,7 +8,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { LikeEntity } from '../entitys/like/like.entity';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { JwtPayload } from '../auth/auth.service';
 import {
@@ -18,6 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LikeDto } from './dto/like.dto';
+import { SuccessDto } from '../dto/success.dto';
 
 @ApiTags('like')
 @Controller('like')
@@ -37,8 +37,8 @@ export class LikeController {
 
   @ApiOperation({ summary: '좋아요 추가', description: '좋아요를 추가합니다.' })
   @ApiOkResponse({
-    description: '좋아요가 추가된 entity',
-    type: () => LikeEntity,
+    description: '성공 코드',
+    type: () => SuccessDto,
   })
   @ApiCookieAuth('token')
   @Post('/:songId/addLike')
@@ -46,20 +46,22 @@ export class LikeController {
   async addLike(
     @Req() req,
     @Param('songId') songId: string,
-  ): Promise<LikeEntity> {
+  ): Promise<SuccessDto> {
     const like = await this.likeService.addLike(
       songId,
       (req.user as JwtPayload).id,
     );
     if (!like) throw new NotFoundException();
 
-    return like;
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({ summary: '좋아요 제거', description: '좋아요를 제거합니다.' })
   @ApiOkResponse({
-    description: '좋아요가 제거된 entity',
-    type: () => LikeEntity,
+    description: '성공 코드',
+    type: () => SuccessDto,
   })
   @ApiCookieAuth('token')
   @Post('/:songId/removeLike')
@@ -67,13 +69,15 @@ export class LikeController {
   async removeLike(
     @Req() req,
     @Param('songId') songId: string,
-  ): Promise<LikeEntity> {
+  ): Promise<SuccessDto> {
     const like = await this.likeService.removeLike(
       songId,
       (req.user as JwtPayload).id,
     );
     if (!like) throw new NotFoundException();
 
-    return like;
+    return {
+      status: 200,
+    };
   }
 }
