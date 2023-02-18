@@ -30,6 +30,7 @@ export class AppController {
   @ApiCreatedResponse({
     description: '팀원 목록입니다.',
     type: () => TeamsEntity,
+    isArray: true,
   })
   @Get('/teams')
   async findAllTeams(): Promise<Array<TeamsEntity>> {
