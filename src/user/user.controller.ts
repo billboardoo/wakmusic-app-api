@@ -126,7 +126,7 @@ export class UserController {
     summary: '유저의 좋아요 목록 편집',
     description: '유저의 좋아요 목록을 수정합니다.',
   })
-  @ApiCreatedResponse({
+  @ApiOkResponse({
     type: () => SuccessDto,
   })
   @ApiCookieAuth('token')
