@@ -128,7 +128,7 @@ export class PlaylistService {
     newPlaylist.title = body.title;
     newPlaylist.creator_id = id;
     newPlaylist.image = body.image;
-    newPlaylist.songlist = [];
+    newPlaylist.songlist = body.songlist || [];
 
     return await this.playlistRepository.save(newPlaylist);
   }
@@ -167,7 +167,7 @@ export class PlaylistService {
         '개인의 플레이리스트는 추가할 수 없습니다.',
       );
 
-    const newPlaylist = await this.create(playlist.creator_id, playlist);
+    const newPlaylist = await this.create(creatorId, playlist);
     return newPlaylist;
   }
 

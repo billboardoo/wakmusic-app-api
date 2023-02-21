@@ -1,4 +1,4 @@
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class PlaylistCreateBodyDto {
@@ -9,4 +9,9 @@ export class PlaylistCreateBodyDto {
   @ApiProperty({ description: '플레이리스트 이미지 타입' })
   @IsString()
   image: string;
+
+  @ApiProperty({ nullable: true })
+  @IsArray()
+  @IsOptional()
+  songlist?: Array<string>;
 }
