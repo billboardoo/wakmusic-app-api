@@ -122,7 +122,7 @@ export class UserService {
     const results: Array<LikeDto> = [];
 
     for (const like of likes) {
-      results.push(await this.likeService.getLike(id));
+      results.push(await this.likeService.getLike(like.song_id));
     }
 
     return results;
