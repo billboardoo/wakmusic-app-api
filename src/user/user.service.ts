@@ -14,6 +14,7 @@ import { PlaylistService } from '../playlist/playlist.service';
 import { SongsService } from '../songs/songs.service';
 import { LikeDto } from '../like/dto/like.dto';
 import { LikeService } from '../like/like.service';
+import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 
 @Injectable()
 export class UserService {
@@ -118,13 +119,17 @@ export class UserService {
   }
 
   async getUserLikes(id: string): Promise<Array<LikeDto>> {
-    const likes = await this.likeService.findByUserId(id);
+    const manager = await this.likeService.getManager(id);
     const results: Array<LikeDto> = [];
 
-    for (const like of likes) {
-      results.push(await this.likeService.getLike(like.song_id));
+    for (const song of manager.songs) {
+      results.push(await this.likeService.getLike(song));
     }
 
     return results;
+  }
+
+  async editUserLikes(id: string, body: EditUserLikesBodyDto): Promise<void> {
+    await this.likeService.editManager(id, body);
   }
 }

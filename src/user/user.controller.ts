@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { SetProfileBodyDto } from './dto/body/set-profile.body.dto';
@@ -15,6 +23,7 @@ import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-
 import { LikeDto } from '../like/dto/like.dto';
 import { SuccessDto } from '../dto/success.dto';
 import { CategoriesService } from '../categories/categories.service';
+import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -94,10 +103,7 @@ export class UserController {
   async getUserPlaylists(
     @Req() req: Request,
   ): Promise<Array<PlaylistGetDetailResponseDto>> {
-    const playlists = await this.userService.getUserPlaylists(
-      (req.user as JwtPayload).id,
-    );
-    return playlists;
+    return await this.userService.getUserPlaylists((req.user as JwtPayload).id);
   }
 
   @ApiOperation({
@@ -113,8 +119,27 @@ export class UserController {
   @Get('/likes')
   @UseGuards(JwtAuthGuard)
   async getUserLikes(@Req() req): Promise<Array<LikeDto>> {
-    const likes = await this.userService.getUserLikes((req as JwtPayload).id);
+    return await this.userService.getUserLikes((req as JwtPayload).id);
+  }
 
-    return likes;
+  @ApiOperation({
+    summary: '유저의 좋아요 목록 편집',
+    description: '유저의 좋아요 목록을 수정합니다.',
+  })
+  @ApiCreatedResponse({
+    type: () => SuccessDto,
+  })
+  @ApiCookieAuth('token')
+  @Patch('/likes/edit')
+  @UseGuards(JwtAuthGuard)
+  async editUserLikes(
+    @Req() req,
+    @Body() body: EditUserLikesBodyDto,
+  ): Promise<SuccessDto> {
+    await this.userService.editUserLikes((req as JwtPayload).id, body);
+
+    return {
+      status: 200,
+    };
   }
 }

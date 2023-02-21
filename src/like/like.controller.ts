@@ -1,7 +1,7 @@
 import {
   Controller,
   Get,
-  NotFoundException,
+  InternalServerErrorException,
   Param,
   Post,
   Req,
@@ -28,9 +28,7 @@ export class LikeController {
   @ApiOkResponse({ description: '좋아요 entity', type: () => LikeDto })
   @Get('/:songId')
   async getLike(@Param('songId') songId: string): Promise<LikeDto> {
-    const like = await this.likeService.getLike(songId);
-
-    return like;
+    return await this.likeService.getLike(songId);
   }
 
   @ApiOperation({ summary: '좋아요 추가', description: '좋아요를 추가합니다.' })
@@ -49,7 +47,7 @@ export class LikeController {
       songId,
       (req.user as JwtPayload).id,
     );
-    if (!like) throw new NotFoundException();
+    if (!like) throw new InternalServerErrorException();
 
     return {
       status: 200,
@@ -72,7 +70,7 @@ export class LikeController {
       songId,
       (req.user as JwtPayload).id,
     );
-    if (!like) throw new NotFoundException();
+    if (!like) throw new InternalServerErrorException();
 
     return {
       status: 200,
