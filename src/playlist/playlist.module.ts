@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { SongsModule } from '../songs/songs.module';
+import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PlaylistEntity], 'user'),
+    TypeOrmModule.forFeature([PlaylistEntity, UserPlaylistsEntity], 'user'),
     TypeOrmModule.forFeature([RecommendPlaylistEntity], 'like'),
     SongsModule,
   ],

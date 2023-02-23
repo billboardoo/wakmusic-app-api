@@ -19,11 +19,12 @@ import {
 } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
-import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
 import { LikeDto } from '../like/dto/like.dto';
 import { SuccessDto } from '../dto/success.dto';
 import { CategoriesService } from '../categories/categories.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
+import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';
+import { PlaylistEntity } from '../entitys/user/playlist.entity';
 
 @ApiTags('user')
 @Controller('user')
@@ -94,16 +95,35 @@ export class UserController {
   })
   @ApiOkResponse({
     description: '플레이리스트 목록',
-    type: () => PlaylistGetDetailResponseDto,
+    type: () => PlaylistEntity,
     isArray: true,
   })
   @ApiCookieAuth('token')
   @Get('/playlists')
   @UseGuards(JwtAuthGuard)
-  async getUserPlaylists(
-    @Req() req: Request,
-  ): Promise<Array<PlaylistGetDetailResponseDto>> {
+  async getUserPlaylists(@Req() req: Request): Promise<Array<PlaylistEntity>> {
     return await this.userService.getUserPlaylists((req.user as JwtPayload).id);
+  }
+
+  @ApiOperation({
+    summary: '유저의 플레이리스트 목록 편집',
+    description: '유저의 플레이리스트 목록을 수정합니다.',
+  })
+  @ApiOkResponse({
+    type: () => SuccessDto,
+  })
+  @ApiCookieAuth('token')
+  @Patch('/playlists/edit')
+  @UseGuards(JwtAuthGuard)
+  async editUserPlaylists(
+    @Req() req,
+    @Body() body: EditUserPlaylistsBodyDto,
+  ): Promise<SuccessDto> {
+    await this.userService.editUserPlaylists((req as JwtPayload).id, body);
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({

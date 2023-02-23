@@ -12,8 +12,8 @@ import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { SongsService } from '../songs/songs.service';
 import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
-import { TotalEntity } from '../entitys/chart/total.entity';
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
+import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
 
 @Injectable()
 export class PlaylistService {
@@ -25,6 +25,8 @@ export class PlaylistService {
     private readonly playlistRepository: Repository<PlaylistEntity>,
     @InjectRepository(RecommendPlaylistEntity, 'like')
     private readonly recommendRepository: Repository<RecommendPlaylistEntity>,
+    @InjectRepository(UserPlaylistsEntity, 'user')
+    private readonly userPlaylistRepository: Repository<UserPlaylistsEntity>,
   ) {}
 
   async findAll(): Promise<Array<PlaylistEntity>> {
@@ -130,7 +132,11 @@ export class PlaylistService {
     newPlaylist.image = body.image;
     newPlaylist.songlist = body.songlist || [];
 
-    return await this.playlistRepository.save(newPlaylist);
+    const result = await this.playlistRepository.save(newPlaylist);
+
+    await this.addPlaylistToUserPlaylists(id, result.key);
+
+    return result;
   }
 
   async edit(
@@ -166,9 +172,7 @@ export class PlaylistService {
       throw new BadRequestException(
         '개인의 플레이리스트는 추가할 수 없습니다.',
       );
-
-    const newPlaylist = await this.create(creatorId, playlist);
-    return newPlaylist;
+    return await this.create(creatorId, playlist);
   }
 
   private createKey(num = 10) {
@@ -181,5 +185,68 @@ export class PlaylistService {
       );
     }
     return result;
+  }
+
+  async findUserPlaylistsByUserId(id: string): Promise<UserPlaylistsEntity> {
+    let userPlaylists = await this.userPlaylistRepository.findOne({
+      where: {
+        user_id: id,
+      },
+    });
+    if (!userPlaylists) userPlaylists = await this.createUserPlaylists(id);
+
+    return userPlaylists;
+  }
+
+  async createUserPlaylists(id: string): Promise<UserPlaylistsEntity> {
+    const new_user_playlists = this.userPlaylistRepository.create();
+    new_user_playlists.user_id = id;
+    new_user_playlists.playlists = (await this.findByClientId(id)).map(
+      (playlist) => playlist.key,
+    );
+
+    return await this.userPlaylistRepository.save(new_user_playlists);
+  }
+
+  async addPlaylistToUserPlaylists(
+    id: string,
+    playlist: string | Array<string>,
+  ): Promise<void> {
+    const user_playlists = await this.findUserPlaylistsByUserId(id);
+
+    if (Array.isArray(playlist)) {
+      for (const el of playlist) {
+        if (user_playlists.playlists.includes(el))
+          throw new BadRequestException(
+            '이미 추가되어있는 플레이리스트 입니다.',
+          );
+      }
+      user_playlists.playlists.push(...playlist);
+    } else {
+      if (user_playlists.playlists.includes(playlist))
+        throw new BadRequestException('이미 추가되어있는 플레이리스트 입니다.');
+      user_playlists.playlists.push(playlist);
+    }
+
+    await this.userPlaylistRepository.save(user_playlists);
+  }
+
+  async editUserPlaylists(id: string, playlists: Array<string>): Promise<void> {
+    await this.validateUserPlaylists(id, playlists);
+    const user_playlists = await this.findUserPlaylistsByUserId(id);
+    user_playlists.playlists = playlists;
+
+    await this.userPlaylistRepository.save(user_playlists);
+  }
+
+  private async validateUserPlaylists(
+    id: string,
+    playlists: Array<string>,
+  ): Promise<void> {
+    for (const el of playlists) {
+      const playlist = await this.findOneByKeyAndClientId(el, id);
+      if (!playlist)
+        throw new BadRequestException('존재하지 않는 플레이리스트 입니다.');
+    }
   }
 }

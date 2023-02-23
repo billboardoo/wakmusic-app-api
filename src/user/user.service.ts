@@ -9,12 +9,13 @@ import { Repository } from 'typeorm';
 import { OauthDto } from '../auth/dto/oauth.dto';
 import { JwtPayload } from '../auth/auth.service';
 import * as process from 'process';
-import { PlaylistGetDetailResponseDto } from '../playlist/dto/response/playlist-get-detail.response.dto';
 import { PlaylistService } from '../playlist/playlist.service';
 import { SongsService } from '../songs/songs.service';
 import { LikeDto } from '../like/dto/like.dto';
 import { LikeService } from '../like/like.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
+import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';
+import { PlaylistEntity } from '../entitys/user/playlist.entity';
 
 @Injectable()
 export class UserService {
@@ -99,23 +100,22 @@ export class UserService {
     return true;
   }
 
-  async getUserPlaylists(
-    id: string,
-  ): Promise<Array<PlaylistGetDetailResponseDto>> {
-    const playlists = await this.playlistService.findByClientId(id);
-    const results: Array<PlaylistGetDetailResponseDto> = [];
+  async getUserPlaylists(id: string): Promise<Array<PlaylistEntity>> {
+    const playlists = await this.playlistService.findUserPlaylistsByUserId(id);
+    const results: Array<PlaylistEntity> = [];
 
-    for (const playlist of playlists) {
-      const song_ids = playlist.songlist;
-      delete playlist.songlist;
-
-      results.push({
-        ...playlist,
-        songs: await this.songsService.findByIds(song_ids),
-      });
+    for (const playlist_id of playlists.playlists) {
+      results.push(await this.playlistService.findOne(playlist_id));
     }
 
     return results;
+  }
+
+  async editUserPlaylists(
+    id: string,
+    body: EditUserPlaylistsBodyDto,
+  ): Promise<void> {
+    await this.playlistService.editUserPlaylists(id, body.playlists);
   }
 
   async getUserLikes(id: string): Promise<Array<LikeDto>> {
