@@ -101,8 +101,10 @@ export class UserController {
   @ApiCookieAuth('token')
   @Get('/playlists')
   @UseGuards(JwtAuthGuard)
-  async getUserPlaylists(@Req() req: Request): Promise<Array<PlaylistEntity>> {
-    return await this.userService.getUserPlaylists((req.user as JwtPayload).id);
+  async getUserPlaylists(
+    @Req() { user }: { user: JwtPayload },
+  ): Promise<Array<PlaylistEntity>> {
+    return await this.userService.getUserPlaylists(user.id);
   }
 
   @ApiOperation({
@@ -116,10 +118,10 @@ export class UserController {
   @Patch('/playlists/edit')
   @UseGuards(JwtAuthGuard)
   async editUserPlaylists(
-    @Req() req,
+    @Req() { user }: { user: JwtPayload },
     @Body() body: EditUserPlaylistsBodyDto,
   ): Promise<SuccessDto> {
-    await this.userService.editUserPlaylists((req as JwtPayload).id, body);
+    await this.userService.editUserPlaylists(user.id, body);
 
     return {
       status: 200,
@@ -138,8 +140,10 @@ export class UserController {
   @ApiCookieAuth('token')
   @Get('/likes')
   @UseGuards(JwtAuthGuard)
-  async getUserLikes(@Req() req): Promise<Array<LikeDto>> {
-    return await this.userService.getUserLikes((req as JwtPayload).id);
+  async getUserLikes(
+    @Req() { user }: { user: JwtPayload },
+  ): Promise<Array<LikeDto>> {
+    return await this.userService.getUserLikes(user.id);
   }
 
   @ApiOperation({
@@ -153,10 +157,10 @@ export class UserController {
   @Patch('/likes/edit')
   @UseGuards(JwtAuthGuard)
   async editUserLikes(
-    @Req() req,
+    @Req() { user }: { user: JwtPayload },
     @Body() body: EditUserLikesBodyDto,
   ): Promise<SuccessDto> {
-    await this.userService.editUserLikes((req as JwtPayload).id, body);
+    await this.userService.editUserLikes(user.id, body);
 
     return {
       status: 200,
