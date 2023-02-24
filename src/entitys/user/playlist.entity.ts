@@ -1,11 +1,9 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 
 @Entity('playlist_v2')
 export class PlaylistEntity extends BaseEntity {
   @ApiProperty()
-  @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 
