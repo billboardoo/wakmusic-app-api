@@ -115,7 +115,23 @@ export class LikeService {
 
   async editManager(userId: string, body: EditUserLikesBodyDto): Promise<void> {
     const manager = await this.getManager(userId);
+
+    await this.validateSongs(manager.songs, body.songs);
+
     manager.songs = body.songs;
     await this.likeManagerRepository.save(manager);
+  }
+
+  async validateSongs(
+    oldSongs: Array<string>,
+    editSongs: Array<string>,
+  ): Promise<void> {
+    if (oldSongs.length !== editSongs.length)
+      throw new BadRequestException('songs length not matching');
+
+    for (const song of editSongs) {
+      if (!oldSongs.includes(song))
+        throw new BadRequestException('invalid song');
+    }
   }
 }
