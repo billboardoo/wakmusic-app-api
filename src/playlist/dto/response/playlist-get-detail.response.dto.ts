@@ -1,19 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TotalEntity } from '../../../entitys/chart/total.entity';
-import {
-  IsArray,
-  IsNumber,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PlaylistGetDetailResponseDto {
-  @ApiProperty()
-  @IsNumber()
-  id: number;
-
   @ApiProperty({ description: '플레이리스트 고유 key' })
   @IsString()
   key: string;

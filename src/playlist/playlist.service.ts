@@ -49,6 +49,7 @@ export class PlaylistService {
 
     const songs = await this.songsService.findByIds(playlist.songlist);
     delete playlist.songlist;
+    delete playlist.id;
 
     return {
       ...playlist,
