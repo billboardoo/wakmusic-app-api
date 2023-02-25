@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { moment } from '../utils/moment.utils';
 import { Repository } from 'typeorm';
@@ -186,5 +186,18 @@ export class SongsService {
     const lyricsFile = fs.readFileSync(`${lyricsPath}/${id}.vtt`, 'utf8');
 
     return vttParser.parse(lyricsFile, { strict: false }).cues;
+  }
+
+  async validateSongs(
+    oldSongs: Array<string>,
+    editSongs: Array<string>,
+  ): Promise<void> {
+    if (oldSongs.length !== editSongs.length)
+      throw new BadRequestException('songs length not matching');
+
+    for (const song of editSongs) {
+      if (!oldSongs.includes(song) || !(await this.findOne(song)))
+        throw new BadRequestException('invalid song');
+    }
   }
 }

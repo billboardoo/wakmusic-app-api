@@ -149,8 +149,15 @@ export class PlaylistService {
     if (!currentPlaylist)
       throw new NotFoundException('플레이리스트가 없습니다.');
 
-    currentPlaylist.title = body.title;
-    currentPlaylist.songlist = body.songs;
+    if (body.title) currentPlaylist.title = body.title;
+
+    if (body.songs) {
+      await this.songsService.validateSongs(
+        currentPlaylist.songlist,
+        body.songs,
+      );
+      currentPlaylist.songlist = body.songs;
+    }
 
     return await this.playlistRepository.save(currentPlaylist);
   }
