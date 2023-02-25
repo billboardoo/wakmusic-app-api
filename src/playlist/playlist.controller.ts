@@ -33,6 +33,7 @@ import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 import { SuccessDto } from '../dto/success.dto';
 import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
+import { PlaylistEditTitleResponseDto } from './dto/response/playlist-edit-title.response.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -176,7 +177,7 @@ export class PlaylistController {
     description: '플레이리스트의 이름을 수정합니다.',
   })
   @ApiOkResponse({
-    type: () => SuccessDto,
+    type: () => PlaylistEditTitleResponseDto,
   })
   @Patch('/:key/edit/title')
   @UseGuards(JwtAuthGuard)
@@ -184,11 +185,12 @@ export class PlaylistController {
     @Req() { user }: { user: JwtPayload },
     @Param('key') key: string,
     @Body() body: PlaylistEditTitleBodyDto,
-  ): Promise<SuccessDto> {
-    await this.playlistService.edit(user.id, key, body);
+  ): Promise<PlaylistEditTitleResponseDto> {
+    const playlist = await this.playlistService.edit(user.id, key, body);
 
     return {
       status: 200,
+      title: playlist.title,
     };
   }
 

@@ -15,6 +15,7 @@ import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
 import { PlaylistEditDto } from './dto/playlist-edit.dto';
+import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
 
 @Injectable()
 export class PlaylistService {
@@ -141,7 +142,11 @@ export class PlaylistService {
     return result;
   }
 
-  async edit(id: string, key: string, body: PlaylistEditDto): Promise<void> {
+  async edit(
+    id: string,
+    key: string,
+    body: PlaylistEditDto,
+  ): Promise<PlaylistEntity> {
     const currentPlaylist = await this.findOneByKeyAndClientId(key, id);
     if (!currentPlaylist)
       throw new NotFoundException('플레이리스트가 없습니다.');
@@ -156,7 +161,7 @@ export class PlaylistService {
       currentPlaylist.songlist = body.songs;
     }
 
-    await this.playlistRepository.save(currentPlaylist);
+    return await this.playlistRepository.save(currentPlaylist);
   }
 
   async delete(key: string, clientId: string): Promise<PlaylistEntity> {
