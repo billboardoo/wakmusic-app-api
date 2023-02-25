@@ -32,6 +32,7 @@ import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 import { SuccessDto } from '../dto/success.dto';
+import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -149,8 +150,8 @@ export class PlaylistController {
   }
 
   @ApiOperation({
-    summary: '플레이리스트 수정',
-    description: '플레이리스트를 수정합니다.',
+    summary: '플레이리스트 곡 목록 수정',
+    description: '플레이리스트의 곡 목록을 수정합니다.',
   })
   @ApiOkResponse({
     type: () => SuccessDto,
@@ -163,13 +164,28 @@ export class PlaylistController {
     @Param('key') key: string,
     @Body() body: PlaylistEditBodyDto,
   ): Promise<SuccessDto> {
-    const playlist = await this.playlistService.edit(
-      (req.user as JwtPayload).id,
-      key,
-      body,
-    );
+    await this.playlistService.edit((req.user as JwtPayload).id, key, body);
 
-    if (!playlist) throw new InternalServerErrorException();
+    return {
+      status: 200,
+    };
+  }
+
+  @ApiOperation({
+    summary: '플레이리스트 이름 수정',
+    description: '플레이리스트의 이름을 수정합니다.',
+  })
+  @ApiOkResponse({
+    type: () => SuccessDto,
+  })
+  @Patch('/:key/edit/title')
+  @UseGuards(JwtAuthGuard)
+  async editPlaylistTitle(
+    @Req() { user }: { user: JwtPayload },
+    @Param('key') key: string,
+    @Body() body: PlaylistEditTitleBodyDto,
+  ): Promise<SuccessDto> {
+    await this.playlistService.edit(user.id, key, body);
 
     return {
       status: 200,
