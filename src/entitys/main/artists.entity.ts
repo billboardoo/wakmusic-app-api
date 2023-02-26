@@ -24,6 +24,10 @@ export class MainArtistsEntity extends BaseEntity {
   @Column()
   title: string;
 
+  @ApiProperty({ description: '한 줄 소개(앱)' })
+  @Column({ type: 'text' })
+  app_title: string;
+
   @ApiProperty({ description: '긴 소개글' })
   @Column()
   description: string;
