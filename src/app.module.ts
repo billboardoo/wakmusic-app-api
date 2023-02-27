@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   chartDataSource,
+  dataDataSource,
   likeDataSource,
   mainDataSource,
   userDataSource,
@@ -24,16 +25,24 @@ import { QnaModule } from './qna/qna.module';
 import { NoticeModule } from './notice/notice.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { CategoriesModule } from './categories/categories.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
     TypeOrmModule.forRoot(userDataSource),
     TypeOrmModule.forRoot(likeDataSource),
+    TypeOrmModule.forRoot(dataDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
     ChartsModule,
     SongsModule,

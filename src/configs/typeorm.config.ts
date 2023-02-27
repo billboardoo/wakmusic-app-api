@@ -19,6 +19,8 @@ import { QnaEntity } from '../entitys/main/qna.entity';
 import { NoticeEntity } from '../entitys/main/notice.entity';
 import { CategoriesEntity } from '../entitys/main/categories.entity';
 import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
+import { PlaylistCopyEntity } from '../entitys/data/playlist_copy.entity';
+import { PlaylistCopyLogEntity } from '../entitys/data/playlist_copy_log.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -61,4 +63,11 @@ export const likeDataSource: TypeOrmModuleOptions = {
   database: `${rootPath}/src/database/like.db`,
   entities: [LikeEntity, LikeManagerEntity, RecommendPlaylistEntity],
   synchronize: false,
+};
+
+export const dataDataSource: TypeOrmModuleOptions = {
+  name: 'data',
+  type: 'sqlite',
+  database: `${rootPath}/src/database/data.db`,
+  entities: [PlaylistCopyEntity, PlaylistCopyLogEntity],
 };
