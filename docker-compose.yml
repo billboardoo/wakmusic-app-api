@@ -12,7 +12,6 @@ services:
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./conf/nginx/conf.d:/etc/nginx/conf.d
     networks:
-      - default
       - wakmusic-api
     environment:
       - TZ=Asia/Seoul
