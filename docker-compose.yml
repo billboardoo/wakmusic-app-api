@@ -64,7 +64,7 @@ services:
     volumes:
       - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
     ports:
-      - 3001:8080
+      - 3002:8080
     links:
       - redis-queue
       - redis-cluster
@@ -81,7 +81,24 @@ services:
     volumes:
       - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
     ports:
-      - 3002:8080
+      - 3003:8080
+    links:
+      - redis-queue
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+
+  nest-node-3:
+    networks:
+      - wakmusic-api
+    container_name: nest-node-3
+    build: 
+      dockerfile: ./Dockerfile
+      context: .
+    volumes:
+      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+    ports:
+      - 3004:8080
     links:
       - redis-queue
       - redis-cluster
