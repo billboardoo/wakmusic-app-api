@@ -11,11 +11,12 @@ services:
     volumes:
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./../wakmusic/src:/home/ubuntu/wakmusic/src
     networks:
       - wakmusic-api
     environment:
       - TZ=Asia/Seoul
-    depends_on:
+    links:
       - nest-node-1
       - nest-node-2
       - nest-node-3
