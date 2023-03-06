@@ -1,9 +1,16 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  CacheTTL,
+  Controller,
+  Get,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { MainArtistsEntity } from '../entitys/main/artists.entity';
 import { FindQueryDto } from './dto/query/find.query.dto';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { HttpCacheInterceptor } from '../core/interceptor/http-cache.interceptor';
 
 const artistExample = {
   id: 'woowakgood',

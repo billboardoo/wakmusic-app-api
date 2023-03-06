@@ -17,10 +17,9 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { Request } from 'express';
 import { JwtPayload } from '../auth/auth.service';
 import { LikeDto } from '../like/dto/like.dto';
-import { SuccessDto } from '../dto/success.dto';
+import { SuccessDto } from '../core/dto/success.dto';
 import { CategoriesService } from '../categories/categories.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';

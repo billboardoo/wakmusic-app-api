@@ -1,4 +1,6 @@
 import {
+  CACHE_MANAGER,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -16,10 +18,14 @@ import { LikeService } from '../like/like.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
   constructor(
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+
     private readonly playlistService: PlaylistService,
     private readonly likeService: LikeService,
     private readonly songsService: SongsService,
@@ -29,6 +35,7 @@ export class UserService {
   ) {}
 
   async findOneById(id: string): Promise<UserEntity> {
+    console.log('test');
     const user = await this.userRepository.findOne({
       where: {
         id: id,

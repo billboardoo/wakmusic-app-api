@@ -1,0 +1,2 @@
+export const CACHE_EVICT_METADATA = 'cache:CACHE_EVICT';
+export const CACHE_DEACTIVATE_METADATA = 'cache:CACHE_DEACTIVATE';

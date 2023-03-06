@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   Inject,
   Injectable,
   NotFoundException,
@@ -8,18 +9,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { Repository } from 'typeorm';
 import { PlaylistCreateBodyDto } from './dto/body/playlist-create.body.dto';
-import { PlaylistEditBodyDto } from './dto/body/playlist-edit.body.dto';
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { SongsService } from '../songs/songs.service';
 import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
 import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
 import { PlaylistEditDto } from './dto/playlist-edit.dto';
-import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { moment } from '../utils/moment.utils';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class PlaylistService {
   constructor(
+    @InjectQueue('playlist')
+    private playlistQueue: Queue,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+
     @Inject(SongsService)
     private readonly songsService: SongsService,
 
@@ -161,7 +169,11 @@ export class PlaylistService {
       currentPlaylist.songlist = body.songs;
     }
 
-    return await this.playlistRepository.save(currentPlaylist);
+    const editPlaylist = await this.playlistRepository.save(currentPlaylist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+
+    return editPlaylist;
   }
 
   async delete(key: string, clientId: string): Promise<PlaylistEntity> {
@@ -169,7 +181,11 @@ export class PlaylistService {
 
     if (!playlist) throw new NotFoundException('playlist not found');
 
-    return await this.playlistRepository.remove(playlist);
+    const deleted_playlist = await this.playlistRepository.remove(playlist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+
+    return deleted_playlist;
   }
 
   async addToMyPlaylist(
@@ -182,7 +198,22 @@ export class PlaylistService {
       throw new BadRequestException(
         '개인의 플레이리스트는 추가할 수 없습니다.',
       );
-    return await this.create(creatorId, playlist);
+    const new_playlist = await this.create(creatorId, playlist);
+
+    await this.playlistQueue.add(
+      'add_to_my_playlist',
+      {
+        playlist_key: playlist.key,
+        new_playlist_key: new_playlist.key,
+        datetime: moment().valueOf(),
+      },
+      {
+        removeOnComplete: true,
+        removeOnFail: true,
+      },
+    );
+
+    return new_playlist;
   }
 
   private createKey(num = 10) {
@@ -239,6 +270,7 @@ export class PlaylistService {
     }
 
     await this.userPlaylistRepository.save(user_playlists);
+    await this.cacheManager.del(`(${id}) /api/user/playlists`);
   }
 
   async editUserPlaylists(id: string, playlists: Array<string>): Promise<void> {
@@ -247,6 +279,7 @@ export class PlaylistService {
     user_playlists.playlists = playlists;
 
     await this.userPlaylistRepository.save(user_playlists);
+    await this.cacheManager.del(`(${id}) /api/user/playlists`);
   }
 
   private async validateUserPlaylists(

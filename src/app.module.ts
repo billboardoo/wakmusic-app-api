@@ -1,9 +1,15 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  CacheModule,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   chartDataSource,
+  dataDataSource,
   likeDataSource,
   mainDataSource,
   userDataSource,
@@ -22,18 +28,55 @@ import { PlaylistModule } from './playlist/playlist.module';
 import { LikeModule } from './like/like.module';
 import { QnaModule } from './qna/qna.module';
 import { NoticeModule } from './notice/notice.module';
-import { LoggerMiddleware } from './middleware/logger.middleware';
+import { LoggerMiddleware } from './core/middleware/logger.middleware';
 import { CategoriesModule } from './categories/categories.module';
+import { BullModule } from '@nestjs/bull';
+import * as redisStore from 'cache-manager-ioredis';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpCacheInterceptor } from './core/interceptor/http-cache.interceptor';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    BullModule.forRoot({
+      redis: {
+        host: 'redis-queue',
+        port: 6379,
+      },
+    }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore,
+      clusterConfig: {
+        nodes: [
+          {
+            host: 'redis-cluster',
+            port: 6300,
+          },
+          {
+            host: 'redis-node-1',
+            port: 6301,
+          },
+          {
+            host: 'redis-node-2',
+            port: 6302,
+          },
+        ],
+        options: {
+          ttl: 5 * 60,
+        },
+      },
+      // host: 'localhost',
+      // port: 8002,
+      // ttl: 5 * 60,
+    }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),
     TypeOrmModule.forRoot(userDataSource),
     TypeOrmModule.forRoot(likeDataSource),
+    TypeOrmModule.forRoot(dataDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
     ChartsModule,
     SongsModule,
@@ -48,7 +91,13 @@ import { CategoriesModule } from './categories/categories.module';
     CategoriesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpCacheInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   constructor(private dataSource: DataSource) {}

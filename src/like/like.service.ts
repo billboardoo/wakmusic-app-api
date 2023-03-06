@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,10 +13,14 @@ import { ChartsService } from '../charts/charts.service';
 import { LikeDto } from './dto/like.dto';
 import { SongsService } from '../songs/songs.service';
 import { EditUserLikesBodyDto } from '../user/dto/body/edit-user-likes.body.dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class LikeService {
   constructor(
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
+
     private readonly chartsService: ChartsService,
     private readonly songsService: SongsService,
 
@@ -49,6 +55,7 @@ export class LikeService {
   async getLike(songId: string): Promise<LikeDto> {
     const like = await this.findOne(songId);
     const song_detail = await this.songsService.findOne(songId);
+    console.log('getLike');
 
     return {
       id: like.id,
@@ -72,7 +79,10 @@ export class LikeService {
     const like = await this.findOne(songId);
     like.likes += 1;
 
-    return await this.likeRepository.save(like);
+    const new_like = await this.likeRepository.save(like);
+    await this.cacheManager.del(`(${userId}) /api/user/likes`);
+
+    return new_like;
   }
 
   async removeLike(songId: string, userId: string): Promise<LikeEntity> {
@@ -91,7 +101,10 @@ export class LikeService {
     const like = await this.findOne(songId);
     like.likes -= 1;
 
-    return await this.likeRepository.save(like);
+    const new_like = await this.likeRepository.save(like);
+    await this.cacheManager.del(`(${userId}) /api/user/likes`);
+
+    return new_like;
   }
 
   async getManager(userId: string): Promise<LikeManagerEntity> {
@@ -120,5 +133,6 @@ export class LikeService {
 
     manager.songs = body.songs;
     await this.likeManagerRepository.save(manager);
+    await this.cacheManager.del(`(${userId}) /api/user/likes`);
   }
 }
