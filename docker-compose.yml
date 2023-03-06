@@ -82,7 +82,7 @@ services:
       dockerfile: ./Dockerfile
       context: .
     volumes:
-      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+      - ./../wakmusic/src:/usr/src/wakmusic/src
     ports:
       - 3002:8080
     links:
@@ -99,7 +99,7 @@ services:
       dockerfile: ./Dockerfile
       context: .
     volumes:
-      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+      - ./../wakmusic/src:/usr/src/wakmusic/src
     ports:
       - 3003:8080
     links:
@@ -116,7 +116,7 @@ services:
       dockerfile: ./Dockerfile
       context: .
     volumes:
-      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+      - ./../wakmusic/src:/usr/src/wakmusic/src
     ports:
       - 3004:8080
     links:
