@@ -1,13 +1,33 @@
 name: wakmusic-api
-version: "1"
+version: "3.3"
 services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - default
+      - wakmusic-api
+    environment:
+      - TZ=Asia/Seoul
+    depends_on:
+      - nest-node-1
+      - nest-node-2
+      - nest-node-3
+
   redis-cluster:
     networks:
       - wakmusic-api
     image: redis:latest
     container_name: redis-test
     volumes:
-      - ./redis/redis_6300.conf:/usr/local/etc/redis/redis.conf
+      - ./conf/redis/redis_6300.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
     ports:
       - 6300:6300
@@ -18,7 +38,7 @@ services:
     image: redis:latest
     container_name: redis-test1
     volumes:
-      - ./redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
+      - ./conf/redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
     ports:
       - 6301:6301
@@ -29,7 +49,7 @@ services:
     image: redis:latest
     container_name: redis-test2
     volumes:
-      - ./redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
+      - ./conf/redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
     ports:
       - 6302:6302
