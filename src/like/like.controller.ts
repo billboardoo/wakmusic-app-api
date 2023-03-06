@@ -17,7 +17,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { LikeDto } from './dto/like.dto';
-import { SuccessDto } from '../dto/success.dto';
+import { SuccessDto } from '../core/dto/success.dto';
 
 @ApiTags('like')
 @Controller('like')

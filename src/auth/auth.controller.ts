@@ -27,10 +27,12 @@ import { AuthResponseDto } from './dto/response/auth.response.dto';
 import { OauthDto } from './dto/oauth.dto';
 import { LoginMobileBodyDto } from './dto/body/login-mobile.body.dto';
 import { LoginMobileResponseDto } from './dto/response/login-mobile.response.dto';
-import { SuccessDto } from '../dto/success.dto';
+import { SuccessDto } from '../core/dto/success.dto';
+import { CacheDeactivate } from 'src/core/decorator/cache-deactivate.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
+@CacheDeactivate()
 export class AuthController {
   constructor(
     private readonly authService: AuthService,

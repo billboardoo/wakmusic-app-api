@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { CacheTTL, Controller, Get } from '@nestjs/common';
 import { NoticeService } from './notice.service';
 import { NoticeEntity } from '../entitys/main/notice.entity';
 import { CategoriesService } from '../categories/categories.service';
@@ -22,6 +22,7 @@ export class NoticeController {
     isArray: true,
   })
   @Get()
+  @CacheTTL(60)
   async findAll(): Promise<Array<NoticeEntity>> {
     return await this.noticeService.findAll();
   }
@@ -35,6 +36,7 @@ export class NoticeController {
     type: () => NoticeEntity,
   })
   @Get('/latest')
+  @CacheTTL(60)
   async findLatest(): Promise<NoticeEntity> {
     return await this.noticeService.findLatest();
   }

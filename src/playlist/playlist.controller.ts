@@ -11,6 +11,9 @@ import {
   BadRequestException,
   Patch,
   Delete,
+  UseInterceptors,
+  CacheKey,
+  CacheTTL,
 } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
@@ -31,7 +34,7 @@ import {
 import { RecommendPlaylistEntity } from '../entitys/like/playlist.entity';
 import { FindPlaylistRecommendedResponseDto } from './dto/response/find-playlist-recommended.response.dto';
 import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail.response.dto';
-import { SuccessDto } from '../dto/success.dto';
+import { SuccessDto } from '../core/dto/success.dto';
 import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
 import { PlaylistEditTitleResponseDto } from './dto/response/playlist-edit-title.response.dto';
 

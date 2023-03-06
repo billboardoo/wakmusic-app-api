@@ -1,4 +1,4 @@
-import { SuccessDto } from '../../../dto/success.dto';
+import { SuccessDto } from '../../../core/dto/success.dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 

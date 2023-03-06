@@ -18,6 +18,7 @@ export class ArtistService {
     private readonly totalRepository: Repository<TotalEntity>,
   ) {}
   async findAll(): Promise<Array<MainArtistsEntity>> {
+    console.log('artist findAll');
     return await this.mainArtistsRepository.find({
       where: {},
     });

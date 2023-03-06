@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   Inject,
   Injectable,
   NotFoundException,
@@ -17,12 +18,15 @@ import { PlaylistEditDto } from './dto/playlist-edit.dto';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { moment } from '../utils/moment.utils';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class PlaylistService {
   constructor(
     @InjectQueue('playlist')
     private playlistQueue: Queue,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
 
     @Inject(SongsService)
     private readonly songsService: SongsService,
@@ -165,7 +169,11 @@ export class PlaylistService {
       currentPlaylist.songlist = body.songs;
     }
 
-    return await this.playlistRepository.save(currentPlaylist);
+    const editPlaylist = await this.playlistRepository.save(currentPlaylist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+
+    return editPlaylist;
   }
 
   async delete(key: string, clientId: string): Promise<PlaylistEntity> {
@@ -173,7 +181,11 @@ export class PlaylistService {
 
     if (!playlist) throw new NotFoundException('playlist not found');
 
-    return await this.playlistRepository.remove(playlist);
+    const deleted_playlist = await this.playlistRepository.remove(playlist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+
+    return deleted_playlist;
   }
 
   async addToMyPlaylist(
@@ -258,6 +270,7 @@ export class PlaylistService {
     }
 
     await this.userPlaylistRepository.save(user_playlists);
+    await this.cacheManager.del(`(${id}) /api/user/playlists`);
   }
 
   async editUserPlaylists(id: string, playlists: Array<string>): Promise<void> {
@@ -266,6 +279,7 @@ export class PlaylistService {
     user_playlists.playlists = playlists;
 
     await this.userPlaylistRepository.save(user_playlists);
+    await this.cacheManager.del(`(${id}) /api/user/playlists`);
   }
 
   private async validateUserPlaylists(

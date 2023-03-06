@@ -1,0 +1,93 @@
+name: wakmusic-api
+version: "1"
+services:
+  redis-cluster:
+    networks:
+      - wakmusic-api
+    image: redis:latest
+    container_name: redis-test
+    volumes:
+      - ./redis/redis_6300.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6300:6300
+
+  redis-node-1:
+    networks:
+      - wakmusic-api
+    image: redis:latest
+    container_name: redis-test1
+    volumes:
+      - ./redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6301:6301
+
+  redis-node-2:
+    networks:
+      - wakmusic-api
+    image: redis:latest
+    container_name: redis-test2
+    volumes:
+      - ./redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    ports:
+      - 6302:6302
+
+  redis-cluster-entry:
+    networks:
+      - wakmusic-api
+    image: redis:latest
+    container_name: redis-cluster-entry
+    command: redis-cli --cluster create redis-cluster:6300 redis-node-1:6301 redis-node-2:6302 --cluster-yes
+    depends_on:
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+
+  redis-queue:
+    networks:
+      - wakmusic-api
+    image: redis:latest
+    container_name: redis-queue
+    command: redis-server
+    ports:
+      - 8001:6379
+  
+  nest-node-1:
+    networks:
+      - wakmusic-api
+    container_name: nest-node-1
+    build: 
+      dockerfile: ./Dockerfile
+      context: .
+    volumes:
+      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+    ports:
+      - 3001:8080
+    links:
+      - redis-queue
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+
+  nest-node-2:
+    networks:
+      - wakmusic-api
+    container_name: nest-node-2
+    build: 
+      dockerfile: ./Dockerfile
+      context: .
+    volumes:
+      - ./../wakmusic/src/database:/usr/src/wakmusic/src/database
+    ports:
+      - 3002:8080
+    links:
+      - redis-queue
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
+
+networks:
+  wakmusic-api:
+    driver: bridge
