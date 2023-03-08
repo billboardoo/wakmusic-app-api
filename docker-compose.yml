@@ -11,6 +11,7 @@ services:
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./conf/nginx/conf.d:/etc/nginx/conf.d
       - ./../wakmusic:/home/ubuntu/wakmusic
+      - ./../wakmusic-lyrics:/home/ubuntu/wakmusic-lyrics
     networks:
       - wakmusic-api
     environment:
@@ -31,38 +32,38 @@ services:
     ports:
       - 6300:6300
 
-  redis-node-1:
-    networks:
-      - wakmusic-api
-    image: redis:latest
-    container_name: redis-test1
-    volumes:
-      - ./conf/redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - 6301:6301
+  # redis-node-1:
+  #   networks:
+  #     - wakmusic-api
+  #   image: redis:latest
+  #   container_name: redis-test1
+  #   volumes:
+  #     - ./conf/redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
+  #   command: redis-server /usr/local/etc/redis/redis.conf
+  #   ports:
+  #     - 6301:6301
 
-  redis-node-2:
-    networks:
-      - wakmusic-api
-    image: redis:latest
-    container_name: redis-test2
-    volumes:
-      - ./conf/redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
-    command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - 6302:6302
+  # redis-node-2:
+  #   networks:
+  #     - wakmusic-api
+  #   image: redis:latest
+  #   container_name: redis-test2
+  #   volumes:
+  #     - ./conf/redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
+  #   command: redis-server /usr/local/etc/redis/redis.conf
+  #   ports:
+  #     - 6302:6302
 
-  redis-cluster-entry:
-    networks:
-      - wakmusic-api
-    image: redis:latest
-    container_name: redis-cluster-entry
-    command: redis-cli --cluster create redis-cluster:6300 redis-node-1:6301 redis-node-2:6302 --cluster-yes
-    depends_on:
-      - redis-cluster
-      - redis-node-1
-      - redis-node-2
+  # redis-cluster-entry:
+  #   networks:
+  #     - wakmusic-api
+  #   image: redis:latest
+  #   container_name: redis-cluster-entry
+  #   command: redis-cli --cluster create redis-cluster:6300 redis-node-1:6301 redis-node-2:6302 --cluster-yes
+  #   depends_on:
+  #     - redis-cluster
+  #     - redis-node-1
+  #     - redis-node-2
 
   redis-queue:
     networks:
@@ -87,8 +88,8 @@ services:
     links:
       - redis-queue
       - redis-cluster
-      - redis-node-1
-      - redis-node-2
+      # - redis-node-1
+      # - redis-node-2
 
   nest-node-2:
     networks:
@@ -104,8 +105,8 @@ services:
     links:
       - redis-queue
       - redis-cluster
-      - redis-node-1
-      - redis-node-2
+      # - redis-node-1
+      # - redis-node-2
 
   nest-node-3:
     networks:
@@ -121,8 +122,8 @@ services:
     links:
       - redis-queue
       - redis-cluster
-      - redis-node-1
-      - redis-node-2
+      # - redis-node-1
+      # - redis-node-2
 
 networks:
   wakmusic-api:

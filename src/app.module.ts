@@ -49,28 +49,28 @@ import { HttpCacheInterceptor } from './core/interceptor/http-cache.interceptor'
     CacheModule.register({
       isGlobal: true,
       store: redisStore,
-      clusterConfig: {
-        nodes: [
-          {
-            host: 'redis-cluster',
-            port: 6300,
-          },
-          {
-            host: 'redis-node-1',
-            port: 6301,
-          },
-          {
-            host: 'redis-node-2',
-            port: 6302,
-          },
-        ],
-        options: {
-          ttl: 5 * 60,
-        },
-      },
-      // host: 'localhost',
-      // port: 8002,
-      // ttl: 5 * 60,
+      // clusterConfig: {
+      //   nodes: [
+      //     {
+      //       host: 'redis-cluster',
+      //       port: 6300,
+      //     },
+      //     {
+      //       host: 'redis-node-1',
+      //       port: 6301,
+      //     },
+      //     {
+      //       host: 'redis-node-2',
+      //       port: 6302,
+      //     },
+      //   ],
+      //   options: {
+      //     ttl: 5 * 60,
+      //   },
+      // },
+      host: 'redis-cluster',
+      port: 6300,
+      ttl: 5 * 60,
     }),
     TypeOrmModule.forRoot(mainDataSource),
     TypeOrmModule.forRoot(chartDataSource),

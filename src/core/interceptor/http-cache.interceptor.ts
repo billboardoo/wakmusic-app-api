@@ -62,29 +62,29 @@ export class HttpCacheInterceptor extends CacheInterceptor {
    * @param cacheKeys 삭제할 캐시 키 목록
    */
   private async _clearCaches(cacheKeys: string[]): Promise<boolean> {
-    // const client: Redis = await this.cacheManager.store.getClient();
+    const client: Redis = await this.cacheManager.store.getClient();
 
-    // const _keys = await Promise.all(
-    //   cacheKeys.map((cacheKey) => client.keys(`*${cacheKey}*`)),
-    // );
-    // const keys = _keys.flat();
-    // const result = await Promise.all(
-    //   keys.map((key) => !!this.cacheManager.del(key)),
-    // );
-    // return result.flat().every((r) => !!r);
-
-    const client: Cluster = await this.cacheManager.store.getClient();
-    const redisNodes = client.nodes();
-
-    const result2 = await Promise.all(
-      redisNodes.map(async (redis) => {
-        const _keys = await Promise.all(
-          cacheKeys.map((cacheKey) => redis.keys(`*${cacheKey}*`)),
-        );
-        const keys = _keys.flat();
-        return Promise.all(keys.map((key) => !!this.cacheManager.del(key)));
-      }),
+    const _keys = await Promise.all(
+      cacheKeys.map((cacheKey) => client.keys(`*${cacheKey}*`)),
     );
-    return result2.flat().every((r) => !!r);
+    const keys = _keys.flat();
+    const result = await Promise.all(
+      keys.map((key) => !!this.cacheManager.del(key)),
+    );
+    return result.flat().every((r) => !!r);
+
+    // const client: Cluster = await this.cacheManager.store.getClient();
+    // const redisNodes = client.nodes();
+
+    // const result2 = await Promise.all(
+    //   redisNodes.map(async (redis) => {
+    //     const _keys = await Promise.all(
+    //       cacheKeys.map((cacheKey) => redis.keys(`*${cacheKey}*`)),
+    //     );
+    //     const keys = _keys.flat();
+    //     return Promise.all(keys.map((key) => !!this.cacheManager.del(key)));
+    //   }),
+    // );
+    // return result2.flat().every((r) => !!r);
   }
 }
