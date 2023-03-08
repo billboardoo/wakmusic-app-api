@@ -11,6 +11,7 @@ services:
       - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./conf/nginx/conf.d:/etc/nginx/conf.d
       - ./../wakmusic:/home/ubuntu/wakmusic
+      - ./../wakmusic-lyrics:/home/ubuntu/wakmusic-lyrics
     networks:
       - wakmusic-api
     environment:
