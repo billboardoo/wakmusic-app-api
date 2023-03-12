@@ -131,6 +131,7 @@ export class PlaylistController {
       );
 
     return {
+      status: 200,
       key: playlist.key,
     };
   }
@@ -242,6 +243,7 @@ export class PlaylistController {
     if (!playlist) throw new InternalServerErrorException();
 
     return {
+      status: 200,
       key: playlist.key,
     };
   }
