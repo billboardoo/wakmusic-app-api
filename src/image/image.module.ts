@@ -1,18 +1,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ArtistVersionEntity } from 'src/entitys/version/artist.entity';
-import { PlaylistVersionEntity } from 'src/entitys/version/playlist.entity';
-import { ImageController } from './image.controller';
 import { ImageService } from './image.service';
+import { ArtistVersionEntity } from '../entitys/version/artist.entity';
+import { PlaylistVersionEntity } from '../entitys/version/playlist.entity';
+import { RecommendedPlaylistVersionEntity } from '../entitys/version/recommended-playlist.entitiy';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature(
-      [ArtistVersionEntity, PlaylistVersionEntity],
+      [
+        ArtistVersionEntity,
+        PlaylistVersionEntity,
+        RecommendedPlaylistVersionEntity,
+      ],
       'version',
     ),
   ],
-  controllers: [ImageController],
   providers: [ImageService],
   exports: [ImageService],
 })

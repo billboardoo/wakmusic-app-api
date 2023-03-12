@@ -13,6 +13,7 @@ import {
   likeDataSource,
   mainDataSource,
   userDataSource,
+  versionDataSource,
 } from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { NewsEntity } from './entitys/main/news.entity';
@@ -78,6 +79,7 @@ import { ImageModule } from './image/image.module';
     TypeOrmModule.forRoot(userDataSource),
     TypeOrmModule.forRoot(likeDataSource),
     TypeOrmModule.forRoot(dataDataSource),
+    TypeOrmModule.forRoot(versionDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
     ChartsModule,
     SongsModule,
