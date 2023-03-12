@@ -21,6 +21,8 @@ import { CategoriesEntity } from '../entitys/main/categories.entity';
 import { UserPlaylistsEntity } from '../entitys/user/user-playlists.entity';
 import { PlaylistCopyEntity } from '../entitys/data/playlist_copy.entity';
 import { PlaylistCopyLogEntity } from '../entitys/data/playlist_copy_log.entity';
+import { ArtistVersionEntity } from 'src/entitys/version/artist.entity';
+import { PlaylistVersionEntity } from 'src/entitys/version/playlist.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -70,4 +72,11 @@ export const dataDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
   database: `${rootPath}/src/database/data.db`,
   entities: [PlaylistCopyEntity, PlaylistCopyLogEntity],
+};
+
+export const versionDataSource: TypeOrmModuleOptions = {
+  name: 'version',
+  type: 'sqlite',
+  database: `${rootPath}/src/database/version.db`,
+  entities: [ArtistVersionEntity, PlaylistVersionEntity],
 };
