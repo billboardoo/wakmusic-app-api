@@ -29,6 +29,7 @@ import { LoginMobileBodyDto } from './dto/body/login-mobile.body.dto';
 import { LoginMobileResponseDto } from './dto/response/login-mobile.response.dto';
 import { SuccessDto } from '../core/dto/success.dto';
 import { CacheDeactivate } from 'src/core/decorator/cache-deactivate.decorator';
+import { ImageService } from 'src/image/image.service';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -37,6 +38,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
+    private readonly imageService: ImageService,
   ) {}
 
   @Get('/login/google')
@@ -126,10 +128,14 @@ export class AuthController {
     const userId = (req.user as JwtPayload).id;
     const user = await this.userService.findOneById(userId);
     const first = this.userService.checkFirstLogin(user.first_login_time);
+    const profile_version = await this.imageService.getProfileImageVersion(
+      user.profile,
+    );
 
     return {
       ...user,
       first,
+      profile_version: profile_version.version,
     };
   }
 

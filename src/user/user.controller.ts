@@ -24,6 +24,7 @@ import { CategoriesService } from '../categories/categories.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
+import { GetUserPlaylistsResponseDto } from './dto/response/get-user-playlists.response.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -102,7 +103,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async getUserPlaylists(
     @Req() { user }: { user: JwtPayload },
-  ): Promise<Array<PlaylistEntity>> {
+  ): Promise<Array<GetUserPlaylistsResponseDto>> {
     return await this.userService.getUserPlaylists(user.id);
   }
 

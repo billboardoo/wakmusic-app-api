@@ -13,6 +13,7 @@ import {
   likeDataSource,
   mainDataSource,
   userDataSource,
+  versionDataSource,
 } from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { NewsEntity } from './entitys/main/news.entity';
@@ -34,6 +35,7 @@ import { BullModule } from '@nestjs/bull';
 import * as redisStore from 'cache-manager-ioredis';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpCacheInterceptor } from './core/interceptor/http-cache.interceptor';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -77,6 +79,7 @@ import { HttpCacheInterceptor } from './core/interceptor/http-cache.interceptor'
     TypeOrmModule.forRoot(userDataSource),
     TypeOrmModule.forRoot(likeDataSource),
     TypeOrmModule.forRoot(dataDataSource),
+    TypeOrmModule.forRoot(versionDataSource),
     TypeOrmModule.forFeature([NewsEntity, TeamsEntity]),
     ChartsModule,
     SongsModule,
@@ -89,6 +92,7 @@ import { HttpCacheInterceptor } from './core/interceptor/http-cache.interceptor'
     QnaModule,
     NoticeModule,
     CategoriesModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [

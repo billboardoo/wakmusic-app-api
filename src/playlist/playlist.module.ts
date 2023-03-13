@@ -10,6 +10,7 @@ import { BullModule } from '@nestjs/bull';
 import { PlaylistProcessor } from './playlist.processor';
 import { PlaylistCopyLogEntity } from '../entitys/data/playlist_copy_log.entity';
 import { PlaylistCopyEntity } from '../entitys/data/playlist_copy.entity';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PlaylistCopyEntity } from '../entitys/data/playlist_copy.entity';
       'data',
     ),
     SongsModule,
+    ImageModule,
   ],
   controllers: [PlaylistController],
   providers: [PlaylistService, PlaylistProcessor],

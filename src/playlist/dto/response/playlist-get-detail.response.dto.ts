@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TotalEntity } from '../../../entitys/chart/total.entity';
-import { IsArray, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class PlaylistGetDetailResponseDto {
@@ -29,4 +29,8 @@ export class PlaylistGetDetailResponseDto {
   @ValidateNested({ each: true })
   @Type(() => TotalEntity)
   songs: Array<TotalEntity>;
+
+  @ApiProperty()
+  @IsNumber()
+  image_version: number;
 }

@@ -11,6 +11,7 @@ import { FindQueryDto } from './dto/query/find.query.dto';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { HttpCacheInterceptor } from '../core/interceptor/http-cache.interceptor';
+import { FindAllResponseDto } from './dto/response/find-all.response.dto';
 
 const artistExample = {
   id: 'woowakgood',
@@ -47,7 +48,7 @@ export class ArtistController {
     },
   })
   @Get('/list')
-  async findAll(): Promise<Array<MainArtistsEntity>> {
+  async findAll(): Promise<Array<FindAllResponseDto>> {
     return await this.artistService.findAll();
   }
 
