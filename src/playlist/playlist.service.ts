@@ -19,6 +19,8 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { moment } from '../utils/moment.utils';
 import { Cache } from 'cache-manager';
+import { ImageService } from 'src/image/image.service';
+import { FindAllPlaylistRecommendedResponseDto } from './dto/response/find-all-playlist-recommended.response.dto';
 
 @Injectable()
 export class PlaylistService {
@@ -30,6 +32,7 @@ export class PlaylistService {
 
     @Inject(SongsService)
     private readonly songsService: SongsService,
+    private readonly imageService: ImageService,
 
     @InjectRepository(PlaylistEntity, 'user')
     private readonly playlistRepository: Repository<PlaylistEntity>,
@@ -61,25 +64,42 @@ export class PlaylistService {
     delete playlist.songlist;
     delete playlist.id;
 
+    const image_version = await this.imageService.getPlaylistImageVersion(
+      playlist.image,
+    );
+
     return {
       ...playlist,
       songs: songs,
+      image_version: image_version.default,
     };
   }
 
   async findAllPlaylistRecommended(): Promise<
-    Array<Omit<RecommendPlaylistEntity, 'song_ids'>>
+    Array<FindAllPlaylistRecommendedResponseDto>
   > {
     const playlists = await this.recommendRepository.find({
       where: {
         public: true,
       },
+      select: ['id', 'title', 'public'],
     });
 
-    return playlists.map((playlist) => {
-      delete playlist.song_ids;
-      return playlist;
-    });
+    const result = await Promise.all(
+      playlists.map(async (playlist) => {
+        const version =
+          await this.imageService.getRecommendedPlaylistImageVersion(
+            playlist.id,
+          );
+
+        return {
+          ...playlist,
+          image_round_version: version.round,
+        };
+      }),
+    );
+
+    return result;
   }
 
   async findPlaylistRecommended(
@@ -91,12 +111,17 @@ export class PlaylistService {
         public: true,
       },
     });
+    if (!playlist) throw new BadRequestException('playlist not exist');
+
+    const image_version =
+      await this.imageService.getRecommendedPlaylistImageVersion(playlist.id);
 
     return {
       id: playlist.id,
       title: playlist.title,
       songs: await this.songsService.findByIds(playlist.song_ids),
       public: playlist.public,
+      image_square_version: image_version.square,
     };
   }
 

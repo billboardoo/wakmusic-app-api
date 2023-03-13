@@ -24,6 +24,7 @@ import { PlaylistCopyLogEntity } from '../entitys/data/playlist_copy_log.entity'
 import { ArtistVersionEntity } from '../entitys/version/artist.entity';
 import { PlaylistVersionEntity } from '../entitys/version/playlist.entity';
 import { RecommendedPlaylistVersionEntity } from '../entitys/version/recommended-playlist.entitiy';
+import { ProfileVersionEntity } from 'src/entitys/version/profile.entity';
 
 export const mainDataSource: TypeOrmModuleOptions = {
   type: 'sqlite',
@@ -83,5 +84,6 @@ export const versionDataSource: TypeOrmModuleOptions = {
     ArtistVersionEntity,
     PlaylistVersionEntity,
     RecommendedPlaylistVersionEntity,
+    ProfileVersionEntity,
   ],
 };

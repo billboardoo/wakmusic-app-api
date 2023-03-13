@@ -37,6 +37,7 @@ import { PlaylistGetDetailResponseDto } from './dto/response/playlist-get-detail
 import { SuccessDto } from '../core/dto/success.dto';
 import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
 import { PlaylistEditTitleResponseDto } from './dto/response/playlist-edit-title.response.dto';
+import { FindAllPlaylistRecommendedResponseDto } from './dto/response/find-all-playlist-recommended.response.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -68,7 +69,7 @@ export class PlaylistController {
   })
   @Get('/recommended')
   async findAllPlaylistRecommended(): Promise<
-    Array<Omit<RecommendPlaylistEntity, 'song_ids'>>
+    Array<FindAllPlaylistRecommendedResponseDto>
   > {
     const playlists = await this.playlistService.findAllPlaylistRecommended();
 

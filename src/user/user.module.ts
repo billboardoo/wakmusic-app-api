@@ -7,6 +7,7 @@ import { PlaylistModule } from '../playlist/playlist.module';
 import { LikeModule } from '../like/like.module';
 import { SongsModule } from '../songs/songs.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CategoriesModule } from '../categories/categories.module';
     LikeModule,
     SongsModule,
     CategoriesModule,
+    ImageModule,
   ],
   providers: [UserService],
   controllers: [UserController],

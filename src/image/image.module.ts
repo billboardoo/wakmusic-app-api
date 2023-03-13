@@ -4,6 +4,7 @@ import { ImageService } from './image.service';
 import { ArtistVersionEntity } from '../entitys/version/artist.entity';
 import { PlaylistVersionEntity } from '../entitys/version/playlist.entity';
 import { RecommendedPlaylistVersionEntity } from '../entitys/version/recommended-playlist.entitiy';
+import { ProfileVersionEntity } from 'src/entitys/version/profile.entity';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { RecommendedPlaylistVersionEntity } from '../entitys/version/recommended
         ArtistVersionEntity,
         PlaylistVersionEntity,
         RecommendedPlaylistVersionEntity,
+        ProfileVersionEntity,
       ],
       'version',
     ),

@@ -25,4 +25,8 @@ export class AuthResponseDto {
   @ApiProperty()
   @IsBoolean()
   first: boolean;
+
+  @ApiProperty()
+  @IsNumber()
+  profile_version: number;
 }
