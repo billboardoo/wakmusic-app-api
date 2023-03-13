@@ -34,6 +34,7 @@ export class ArtistService {
 
         return {
           ...artist,
+          color: artist.color.split(',').map((data) => data.split('|')),
           image_round_version: image_version.round,
           image_square_version: image_version.square,
         };

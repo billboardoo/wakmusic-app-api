@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
 
 export class FindAllResponseDto {
   @ApiProperty({ description: '아티스트 id' })
@@ -34,8 +34,8 @@ export class FindAllResponseDto {
     description: 'HEX 색깔 코드',
     example: '5EA585|100|0,5EA585|0|0',
   })
-  @IsString()
-  color: string;
+  @IsArray()
+  color: Array<Array<string>>;
 
   @ApiProperty({ description: '유튜브 URL' })
   @IsString()
