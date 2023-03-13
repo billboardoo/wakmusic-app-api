@@ -38,6 +38,8 @@ import { SuccessDto } from '../core/dto/success.dto';
 import { PlaylistEditTitleBodyDto } from './dto/body/playlist-edit-title.body.dto';
 import { PlaylistEditTitleResponseDto } from './dto/response/playlist-edit-title.response.dto';
 import { FindAllPlaylistRecommendedResponseDto } from './dto/response/find-all-playlist-recommended.response.dto';
+import { PlaylistAddSongsBodyDto } from './dto/body/playlist-add-songs.body.dto';
+import { PlaylistAddSongsResponseDto } from './dto/response/playlist-add-songs.response.dto';
 
 @ApiTags('playlist')
 @Controller('playlist')
@@ -153,6 +155,50 @@ export class PlaylistController {
     if (!playlist) throw new NotFoundException();
 
     return playlist;
+  }
+
+  @ApiOperation({
+    summary: '플레이리스트 노래 추가',
+    description: '플레이리스트에 노래를 추가합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '플레이리스트 노래 추가',
+    type: () => PlaylistAddSongsResponseDto,
+  })
+  @Post('/:key/songs/add')
+  @UseGuards(JwtAuthGuard)
+  async addSongsToPlaylist(
+    @Req() { user }: { user: JwtPayload },
+    @Param('key') key: string,
+    @Body() body: PlaylistAddSongsBodyDto,
+  ): Promise<PlaylistAddSongsResponseDto> {
+    return await this.playlistService.addSongsToPlaylist(
+      user.id,
+      key,
+      body.songs,
+    );
+  }
+
+  @ApiOperation({
+    summary: '플레이리스트 노래 삭제',
+    description: '플레이리스트에 있는 노래를 삭제합니다.',
+  })
+  @ApiOkResponse({
+    description: '플레이리스트 노래 삭제',
+    type: () => SuccessDto,
+  })
+  @Patch('/:key/songs/remove')
+  @UseGuards(JwtAuthGuard)
+  async removeSongsToPlaylist(
+    @Req() { user }: { user: JwtPayload },
+    @Param('key') key: string,
+    @Body() body: PlaylistAddSongsBodyDto,
+  ): Promise<SuccessDto> {
+    await this.playlistService.removeSongsToPlaylist(user.id, key, body.songs);
+
+    return {
+      status: 200,
+    };
   }
 
   @ApiOperation({

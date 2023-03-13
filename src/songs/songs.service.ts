@@ -200,4 +200,12 @@ export class SongsService {
         throw new BadRequestException('invalid song');
     }
   }
+
+  async checkSongs(song_ids: Array<string>): Promise<boolean> {
+    for (const song_id of song_ids) {
+      if (!(await this.findOne(song_id))) return false;
+    }
+
+    return true;
+  }
 }

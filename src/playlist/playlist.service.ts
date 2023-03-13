@@ -21,6 +21,7 @@ import { moment } from '../utils/moment.utils';
 import { Cache } from 'cache-manager';
 import { ImageService } from 'src/image/image.service';
 import { FindAllPlaylistRecommendedResponseDto } from './dto/response/find-all-playlist-recommended.response.dto';
+import { PlaylistAddSongsResponseDto } from './dto/response/playlist-add-songs.response.dto';
 
 @Injectable()
 export class PlaylistService {
@@ -173,6 +174,68 @@ export class PlaylistService {
     await this.addPlaylistToUserPlaylists(id, result.key);
 
     return result;
+  }
+
+  async addSongsToPlaylist(
+    user_id: string,
+    key: string,
+    song_ids: Array<string>,
+  ): Promise<PlaylistAddSongsResponseDto> {
+    const playlist = await this.findOneByKeyAndClientId(key, user_id);
+    if (!playlist) throw new BadRequestException('invaild playlist');
+
+    const check_song_ids = await this.songsService.checkSongs(song_ids);
+    if (!check_song_ids) throw new BadRequestException('invaild song ids');
+
+    let added_songs_length = 0;
+    let duplicated = false;
+
+    for (const song_id of song_ids) {
+      if (playlist.songlist.includes(song_id)) {
+        if (!duplicated) duplicated = true;
+        continue;
+      }
+
+      playlist.songlist.push(song_id);
+      added_songs_length += 1;
+    }
+    if (added_songs_length == 0)
+      throw new BadRequestException('no songs added');
+
+    await this.playlistRepository.save(playlist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+    await this.cacheManager.del(`(${user_id}) /api/user/playlists`);
+
+    return {
+      status: 200,
+      added_songs_length: added_songs_length,
+      duplicated: duplicated,
+    };
+  }
+
+  async removeSongsToPlaylist(
+    user_id: string,
+    key: string,
+    song_ids: Array<string>,
+  ): Promise<void> {
+    const playlist = await this.findOneByKeyAndClientId(key, user_id);
+    if (!playlist) throw new BadRequestException('invaild playlist');
+
+    for (const song_id of song_ids) {
+      if (!playlist.songlist.includes(song_id))
+        throw new BadRequestException('song not exist');
+
+      const song_idx = playlist.songlist.indexOf(song_id);
+      if (song_idx <= -1) throw new BadRequestException('song not exist');
+
+      playlist.songlist.splice(song_idx, 1);
+    }
+
+    await this.playlistRepository.save(playlist);
+
+    await this.cacheManager.del(`/api/playlist/${key}/detail`);
+    await this.cacheManager.del(`(${user_id}) /api/user/playlists`);
   }
 
   async edit(
