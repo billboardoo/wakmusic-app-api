@@ -30,6 +30,8 @@ const artistExample = {
   youtube: 'https://www.youtube.com/user/woowakgood',
   twitch: 'https://www.twitch.tv/woowakgood',
   instagram: 'https://www.instagram.com/instawakgood/',
+  image_round_version: 1,
+  image_square_version: 1,
 };
 
 @ApiTags('artist')
