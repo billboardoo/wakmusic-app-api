@@ -21,6 +21,8 @@ import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { Cache } from 'cache-manager';
 import { ImageService } from 'src/image/image.service';
 import { GetUserPlaylistsResponseDto } from './dto/response/get-user-playlists.response.dto';
+import { CategoriesService } from 'src/categories/categories.service';
+import { GetProfileImagesResponseDto } from './dto/response/get-profile-images.response.dto';
 
 @Injectable()
 export class UserService {
@@ -32,6 +34,7 @@ export class UserService {
     private readonly likeService: LikeService,
     private readonly songsService: SongsService,
     private readonly imageService: ImageService,
+    private readonly categoriesService: CategoriesService,
 
     @InjectRepository(UserEntity, 'user')
     private readonly userRepository: Repository<UserEntity>,
@@ -72,6 +75,23 @@ export class UserService {
     if (!user) throw new InternalServerErrorException();
 
     return user;
+  }
+
+  async getProfileImages(): Promise<Array<GetProfileImagesResponseDto>> {
+    const categories = await this.categoriesService.findCategoriesByType(
+      'profile',
+    );
+    const result = await Promise.all(
+      categories.map(async (category) => {
+        return {
+          type: category,
+          version: (await this.imageService.getProfileImageVersion(category))
+            .version,
+        };
+      }),
+    );
+
+    return result;
   }
 
   async setProfile(id: string, image: string): Promise<void> {

@@ -20,19 +20,16 @@ import {
 import { JwtPayload } from '../auth/auth.service';
 import { LikeDto } from '../like/dto/like.dto';
 import { SuccessDto } from '../core/dto/success.dto';
-import { CategoriesService } from '../categories/categories.service';
 import { EditUserLikesBodyDto } from './dto/body/edit-user-likes.body.dto';
 import { EditUserPlaylistsBodyDto } from './dto/body/edit-user-playlists.body.dto';
 import { PlaylistEntity } from '../entitys/user/playlist.entity';
 import { GetUserPlaylistsResponseDto } from './dto/response/get-user-playlists.response.dto';
+import { GetProfileImagesResponseDto } from './dto/response/get-profile-images.response.dto';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly categoriesService: CategoriesService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @ApiOperation({
     summary: '프로필 목록',
@@ -43,8 +40,8 @@ export class UserController {
     isArray: true,
   })
   @Get('/profile/list')
-  async getProfileImages(): Promise<Array<string>> {
-    return await this.categoriesService.findCategoriesByType('profile');
+  async getProfileImages(): Promise<Array<GetProfileImagesResponseDto>> {
+    return await this.userService.getProfileImages();
   }
 
   @ApiOperation({
