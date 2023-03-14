@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { TotalEntity } from '../entitys/chart/total.entity';
 import { moment } from '../utils/moment.utils';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindSongsQueryDto } from './dto/query/find-songs.query.dto';
 import * as fs from 'fs';
@@ -27,14 +27,11 @@ export class SongsService {
   }
 
   async findByIds(ids: Array<string>): Promise<Array<TotalEntity>> {
-    const songs: Array<TotalEntity> = [];
-
-    for (const id of ids) {
-      const song = await this.findOne(id);
-      songs.push(song);
-    }
-
-    return songs;
+    return await this.totalRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
   }
 
   async findNewSongs(artist?: string, limit = 10): Promise<Array<TotalEntity>> {
