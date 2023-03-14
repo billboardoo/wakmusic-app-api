@@ -1,5 +1,6 @@
 import {
   CacheModule,
+  ClassSerializerInterceptor,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -100,6 +101,10 @@ import { ImageModule } from './image/image.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: HttpCacheInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
   ],
 })

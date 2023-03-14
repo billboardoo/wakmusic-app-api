@@ -24,18 +24,18 @@ async function bootstrap() {
       },
     }),
   );
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
 
   setupSwagger(app);
-  setupPm2(app);
+  // setupPm2(app);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   process.send = process.send || function () {};
 
   await app.listen(process.env.PORT, () => {
-    process.send('ready');
+    // process.send('ready');
 
     console.log(`application is listening on port ${process.env.PORT}`);
   });
