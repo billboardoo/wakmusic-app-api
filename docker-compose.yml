@@ -16,6 +16,10 @@ services:
       - wakmusic-api
     environment:
       - TZ=Asia/Seoul
+    depends_on:
+      - nest-node-1
+      - nest-node-2
+      - nest-node-3
     links:
       - nest-node-1
       - nest-node-2
@@ -29,8 +33,8 @@ services:
     volumes:
       - ./conf/redis/redis_6300.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - 6300:6300
+    expose:
+      - 6300
 
   redis-node-1:
     networks:
@@ -40,8 +44,8 @@ services:
     volumes:
       - ./conf/redis/redis_6301.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - 6301:6301
+    expose:
+      - 6301
 
   redis-node-2:
     networks:
@@ -51,8 +55,8 @@ services:
     volumes:
       - ./conf/redis/redis_6302.conf:/usr/local/etc/redis/redis.conf
     command: redis-server /usr/local/etc/redis/redis.conf
-    ports:
-      - 6302:6302
+    expose:
+      - 6302
 
   redis-cluster-entry:
     networks:
@@ -64,6 +68,10 @@ services:
       - redis-cluster
       - redis-node-1
       - redis-node-2
+    links:
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
 
   redis-queue:
     networks:
@@ -71,8 +79,8 @@ services:
     image: redis:latest
     container_name: redis-queue
     command: redis-server
-    ports:
-      - 8001:6379
+    expose:
+      - 6379
   
   nest-node-1:
     networks:
@@ -83,8 +91,8 @@ services:
       context: .
     volumes:
       - ./../wakmusic/src:/usr/src/wakmusic/src
-    ports:
-      - 3002:8080
+    expose:
+      - 8080
     links:
       - redis-queue
       - redis-cluster
@@ -100,8 +108,8 @@ services:
       context: .
     volumes:
       - ./../wakmusic/src:/usr/src/wakmusic/src
-    ports:
-      - 3003:8080
+    expose:
+      - 8080
     links:
       - redis-queue
       - redis-cluster
@@ -117,8 +125,13 @@ services:
       context: .
     volumes:
       - ./../wakmusic/src:/usr/src/wakmusic/src
-    ports:
-      - 3004:8080
+    expose:
+      - 8080
+    depends_on:
+      - redis-queue
+      - redis-cluster
+      - redis-node-1
+      - redis-node-2
     links:
       - redis-queue
       - redis-cluster
