@@ -44,14 +44,9 @@ export class PlaylistService {
   ) {}
 
   async findAll(): Promise<Array<PlaylistEntity>> {
-    const start = Date.now();
-    const all_playlist = await this.playlistRepository.find({
+    return await this.playlistRepository.find({
       where: {},
     });
-    const end = Date.now();
-    console.log(`findAll ${end - start}`);
-
-    return all_playlist;
   }
 
   async findOne(id: string): Promise<PlaylistEntity> {
