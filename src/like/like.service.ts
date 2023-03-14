@@ -55,7 +55,6 @@ export class LikeService {
   async getLike(songId: string): Promise<LikeDto> {
     const like = await this.findOne(songId);
     const song_detail = await this.songsService.findOne(songId);
-    console.log('getLike');
 
     return {
       id: like.id,
